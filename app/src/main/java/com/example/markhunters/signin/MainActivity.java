@@ -1,25 +1,25 @@
 package com.example.markhunters.signin;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.markhunters.R;
+import com.example.markhunters.model.UserModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-public class ProfileActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
-    public static final String GOOGLE_ACCOUNT = "google_account";
+    public static final String USER_MODEL = "user_model";
     private GoogleSignInOptions gso;
     private GoogleSignInClient gsc;
     private TextView nameTextView;
@@ -28,10 +28,10 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_main);
 
-        nameTextView = findViewById(R.id.name);
-        accountIdTextView =  findViewById(R.id.accountId);
+        nameTextView = findViewById(R.id.username);
+        accountIdTextView =  findViewById(R.id.google_id);
 
         final Button logoutBtn = findViewById(R.id.logoutBtn);
 
@@ -62,8 +62,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void setDataOnView() {
-        GoogleSignInAccount googleSignInAccount = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
-        nameTextView.setText(googleSignInAccount.getDisplayName());
-        accountIdTextView.setText(googleSignInAccount.getId());
+        final UserModel userModel = (UserModel) getIntent().getSerializableExtra(USER_MODEL);
+        nameTextView.setText(userModel.getUsername());
+        accountIdTextView.setText(userModel.getGoogle_id());
     }
 }

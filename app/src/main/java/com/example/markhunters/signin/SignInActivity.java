@@ -6,10 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 
 import com.example.markhunters.R;
+import com.example.markhunters.dao.UserDao;
+import com.example.markhunters.model.UserModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -17,6 +20,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+
+import java.io.Serializable;
 
 public class SignInActivity extends AppCompatActivity {
     private static final String TAG = "AndroidClarified";
@@ -71,8 +76,10 @@ public class SignInActivity extends AppCompatActivity {
 
     // this is the last step, creates a MarkHunterUser model from google account and navigates to the app's main activity
     private void onLoggedIn(GoogleSignInAccount googleSignInAccount) {
-        final Intent intent = new Intent(this, ProfileActivity.class); // todo replace with MainActivity
-        intent.putExtra(ProfileActivity.GOOGLE_ACCOUNT, googleSignInAccount); // todo replace with MarkHunterUser object
+
+        final Intent intent = new Intent(this, MainActivity.class); // todo replace with MainActivity
+        final UserModel userModel = UserDao.getInstance().find(googleSignInAccount.getId());
+        intent.putExtra(MainActivity.USER_MODEL, (Serializable) userModel); // todo replace with MarkHunterUser object
         startActivity(intent);
         finish();
     }
