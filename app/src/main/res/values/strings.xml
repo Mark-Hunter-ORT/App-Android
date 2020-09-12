@@ -4,4 +4,8 @@
     <string name="welcome_to_markhunters">Welcome to MarkHunters!</string>
     <string name="username">username</string>
     <string name="google_id">google_id</string>
+    <string name="nickname">Nickname</string>
+    <string name="email">email</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
 </resources>

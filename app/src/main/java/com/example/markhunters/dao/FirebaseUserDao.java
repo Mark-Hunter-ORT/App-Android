@@ -11,8 +11,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 public class FirebaseUserDao implements Dao<UserModel> {
     private static Dao<UserModel> instance = null;
     private final String USER_COLLECTION = "users";

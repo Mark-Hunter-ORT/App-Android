@@ -79,7 +79,6 @@ public class SignInActivity extends AppCompatActivity {
                         final GoogleSignInAccount account = task.getResult(ApiException.class);
                         Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
                         firebaseAuthWithGoogle(account.getIdToken());
-                        // Todo datos del user ?
                     } catch (ApiException e) {
                         // The ApiException status code indicates the detailed failure reason.
                         Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
@@ -142,7 +141,6 @@ public class SignInActivity extends AppCompatActivity {
                             // Snackbar.make(mBinding.mainLayout, "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                             // updateUI(null);
                         }
-                        // ...
                     }
                 });
     }

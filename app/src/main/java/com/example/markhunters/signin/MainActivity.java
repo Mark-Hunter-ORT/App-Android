@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.markhunters.R;
@@ -14,8 +13,6 @@ import com.example.markhunters.model.UserModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
@@ -61,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setDataOnView() {
         final UserModel userModel = (UserModel) getIntent().getSerializableExtra(USER_MODEL);
-        nameTextView.setText(userModel.getUsername());
+        nameTextView.setText(userModel.getNickname());
         accountIdTextView.setText(userModel.getUid());
     }
 }
