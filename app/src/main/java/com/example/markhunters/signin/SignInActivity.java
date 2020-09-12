@@ -77,9 +77,10 @@ public class SignInActivity extends AppCompatActivity {
     // this is the last step, creates a MarkHunterUser model from google account and navigates to the app's main activity
     private void onLoggedIn(GoogleSignInAccount googleSignInAccount) {
 
-        final Intent intent = new Intent(this, MainActivity.class); // todo replace with MainActivity
+        final Intent intent = new Intent(this, MainActivity.class);
         final UserModel userModel = UserDao.getInstance().find(googleSignInAccount.getId());
-        intent.putExtra(MainActivity.USER_MODEL, (Serializable) userModel); // todo replace with MarkHunterUser object
+        if (userModel == null) // todo prompt creation (nickname only)
+        intent.putExtra(MainActivity.USER_MODEL, (Serializable) userModel);
         startActivity(intent);
         finish();
     }
