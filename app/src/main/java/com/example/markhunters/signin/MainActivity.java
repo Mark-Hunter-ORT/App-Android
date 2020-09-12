@@ -16,12 +16,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String USER_MODEL = "user_model";
     private GoogleSignInOptions gso;
     private GoogleSignInClient gsc;
+    private FirebaseAuth mAuth;
     private TextView nameTextView;
     private TextView accountIdTextView;
 
@@ -35,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
         final Button logoutBtn = findViewById(R.id.logoutBtn);
 
+        mAuth = FirebaseAuth.getInstance();
+
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -47,23 +51,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // close session
                 // return to SignInActivity
-                gsc.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // On Succesfull signout we navigate the user back to SigInActivity
-                        Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                    }
-                });
+                mAuth.signOut();
+                Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
             }
         });
-
     }
 
     private void setDataOnView() {
         final UserModel userModel = (UserModel) getIntent().getSerializableExtra(USER_MODEL);
         nameTextView.setText(userModel.getUsername());
-        accountIdTextView.setText(userModel.getGoogle_id());
+        accountIdTextView.setText(userModel.getUid());
     }
 }

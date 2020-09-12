@@ -5,12 +5,12 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 
 public class UserModel implements Serializable {
-    private String google_id;
+    private String uid;
     private String username;
     private String email;
 
     public UserModel (@NotNull final String google_id, @NotNull final String username, @NotNull final String email) {
-        this.google_id = google_id;
+        this.uid = google_id;
         this.username = username;
         this.email = email;
     }
@@ -30,7 +30,7 @@ public class UserModel implements Serializable {
     }
 
     @NotNull
-    public String getGoogle_id() {
-        return google_id;
+    public String getUid() {
+        return uid;
     }
 }
