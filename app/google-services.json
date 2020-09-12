@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "709053308930",
+    "firebase_url": "https://mark-hunters-ort.firebaseio.com",
+    "project_id": "mark-hunters-ort",
+    "storage_bucket": "mark-hunters-ort.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:709053308930:android:26ecfe5c2019a2567e471b",
+        "android_client_info": {
+          "package_name": "com.example.markhunters"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "709053308930-18toivvvsvp7io56hnrta49826hccciu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.markhunters",
+            "certificate_hash": "883f546ba79956b309aa2fe12944fdba2c579a60"
+          }
+        },
+        {
+          "client_id": "709053308930-gpt9hjtpsfdtp84dvni22ln90650mn7u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFCpuTjTiHGVVlDgC_Vq19YMu6FW84IrI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "709053308930-gpt9hjtpsfdtp84dvni22ln90650mn7u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
