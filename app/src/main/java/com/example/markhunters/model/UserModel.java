@@ -11,9 +11,6 @@ public class UserModel extends Model {
     private String nickname;
     private String email;
 
-    /**
-     * Ideally this method will be invoked after retrieving a user from the database.
-     */
     public UserModel(@NotNull final String uid, @NotNull final String nickname, @NotNull final String email) {
         this.uid = uid;
         this.nickname = nickname;

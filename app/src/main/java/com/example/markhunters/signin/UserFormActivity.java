@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.markhunters.R;
+import com.example.markhunters.dao.DaoCallback;
 import com.example.markhunters.model.UserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -22,6 +23,7 @@ public class UserFormActivity extends UserActivity {
     private TextView nicknamePlainText;
     private TextView emailTextView;
     private String uid;
+    private UserModel originalModel = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,26 +51,47 @@ public class UserFormActivity extends UserActivity {
             @Override
             public void onClick(View view) {
                 if (validateFields()) {
-                    Toast.makeText(UserFormActivity.this, "User saved.", Toast.LENGTH_SHORT).show();
                     final UserModel toPersist = new UserModel(uid, nicknamePlainText.getText().toString(), emailTextView.getText().toString());
-                    final Task<Void> persistenceTask = dao.persist(toPersist);
-                    persistenceTask.addOnCompleteListener(new OnCompleteListener<Void>() {
+                    dao.persist(toPersist, new DaoCallback<UserModel>() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            final UserModel persisted = dao.find(uid); // retrieve the user that was just created
-                            if (persisted != null) {
-                                startMainActivity(persisted);
-                            }
-                            // Todo else ERROR
+                        public void onTaskCallback(Task<Void> task) {
+                            task.addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Toast.makeText(UserFormActivity.this, "User saved.", Toast.LENGTH_SHORT).show();
+                                    dao.find(uid, new DaoCallback<UserModel>() {
+                                        @Override
+                                        public void onActionCallback(UserModel model) {
+                                            if (model != null) {
+                                                startMainActivity(model); // retrieve the user that was just created
+                                            } // Todo else ERROR
+                                        }
+                                    });
+                                }
+                            });
                         }
                     });
                 }
             }
         });
-
         // Cancel, go back to signin
         final Button cancelButton = findViewById(R.id.cancelButton);
-        cancelButton.setOnClickListener(new SignoutListener());
+
+        /**
+         * originalModel is an existing one that is being edited.
+         * If cancel button is invoked signout must be avoided.
+         * Instead start main activity again.
+         */
+        if (originalModel != null) {
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startMainActivity(originalModel);
+                }
+            });
+        } else {
+            cancelButton.setOnClickListener(new SignoutListener());
+        }
     }
 
     private boolean validateFields() {
@@ -87,6 +110,7 @@ public class UserFormActivity extends UserActivity {
         uid = userModel.getUid();
         if (userModel.getNickname() != null) { // Existing user, "Edit" was invoked
             nicknamePlainText.setText(userModel.getNickname());
+            originalModel = userModel;
         }
     }
 }
