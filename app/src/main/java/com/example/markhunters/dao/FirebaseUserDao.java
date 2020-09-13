@@ -1,6 +1,12 @@
 package com.example.markhunters.dao;
 
+import android.content.Intent;
+
 import com.example.markhunters.model.UserModel;
+import com.example.markhunters.signin.MainActivity;
+import com.example.markhunters.signin.UserCreationActivity;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -10,6 +16,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.Serializable;
 
 public class FirebaseUserDao implements Dao<UserModel> {
     private static Dao<UserModel> instance = null;
@@ -42,14 +50,24 @@ public class FirebaseUserDao implements Dao<UserModel> {
     }
 
     @Override
-    public UserModel persist(@NotNull UserModel model) {
+    public Task<Void> persist(@NotNull final UserModel model) {
         final UserModel persisted = find(model.getUid());
         if (persisted != null) {
-            // todo return update();
+            return update(model);// todo return update();
         } else {
-            // todo return create()
+            return create(model);
         }
-        return model; // placeholder
+    }
+
+    private Task<Void> update(@NotNull final UserModel model) {
+        return null;
+    }
+
+    @Override
+    public Task<Void> create(@NotNull final UserModel model) {
+        final String uid = model.getUid();
+        final DocumentReference userReference = fStore.collection("users").document(uid);
+        return userReference.set(model.buildDTO());
     }
 
     public static Dao<UserModel> getInstance() {

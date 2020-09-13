@@ -53,6 +53,7 @@ public class SignInActivity extends AppCompatActivity {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
+
         // build a client with the options specified by gso
         gsc = GoogleSignIn.getClient(this, gso);
 
@@ -71,24 +72,25 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK)
-            switch (requestCode) {
-                case RC_SIGN_IN:
-                    final Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                    try {
-                        final GoogleSignInAccount account = task.getResult(ApiException.class);
-                        Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
-                        firebaseAuthWithGoogle(account.getIdToken());
-                    } catch (ApiException e) {
-                        // The ApiException status code indicates the detailed failure reason.
-                        Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-                    }
-                    break;
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == RC_SIGN_IN) {
+                final Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                try {
+                    final GoogleSignInAccount account = task.getResult(ApiException.class);
+                    Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+                    firebaseAuthWithGoogle(account.getIdToken());
+                } catch (ApiException e) {
+                    // The ApiException status code indicates the detailed failure reason.
+                    Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+                }
             }
-
+        }
     }
 
-    // this is the last step, creates a MarkHunterUser model from google account and navigates to the app's main activity
+    /**
+     * Last step. FirebaseUser is already authenticated. Navigate to MainActivity with user from database or go to UserCreationActivity to register it
+     * @param firebaseUser
+     */
     private void onLoggedIn(@NotNull final FirebaseUser firebaseUser) {
         final String uid = firebaseUser.getUid();
         final UserModel userModel = DaoProvider.getUserDao().find(uid);
