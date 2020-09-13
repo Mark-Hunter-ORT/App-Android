@@ -8,15 +8,15 @@
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".signin.UserCreationActivity">
+    tools:context=".signin.UserFormActivity">
 
     <Button
-        android:id="@+id/createButton"
+        android:id="@+id/saveButton"
         android:layout_width="112dp"
         android:layout_height="56dp"
         android:layout_marginTop="132dp"
         android:backgroundTint="#6FB7F1"
-        android:text="@string/create"
+        android:text="@string/save"
         app:layout_constraintEnd_toStartOf="@+id/cancelButton"
         app:layout_constraintHorizontal_bias="0.626"
         app:layout_constraintStart_toStartOf="parent"

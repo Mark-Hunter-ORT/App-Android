@@ -1,20 +1,35 @@
 package com.example.markhunters.model;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserModel implements Serializable {
+public class UserModel extends Model {
     private String uid;
     private String nickname;
     private String email;
 
-    public UserModel (@NotNull final String uid, @NotNull final String nickname, @NotNull final String email) {
+    /**
+     * Ideally this method will be invoked after retrieving a user from the database.
+     */
+    public UserModel(@NotNull final String uid, @NotNull final String nickname, @NotNull final String email) {
         this.uid = uid;
         this.nickname = nickname;
         this.email = email;
+    }
+
+    private UserModel(@NotNull final String uid, @NotNull final String email) {
+        this.uid = uid;
+        this.email = email;
+    }
+
+    /**
+     * This method is invoked when a new user signs in. Thus, nickname must be null.
+     */
+    public static UserModel createNew(@NotNull final String uid, @NotNull final String email) {
+        return new UserModel(uid, email);
     }
 
     @NotNull
@@ -22,13 +37,9 @@ public class UserModel implements Serializable {
         return email;
     }
 
-    @NotNull
+    @Nullable
     public String getNickname() {
         return nickname;
-    }
-
-    public void setNickname(@NotNull final String nickname) {
-        this.nickname = nickname;
     }
 
     @NotNull
@@ -36,7 +47,8 @@ public class UserModel implements Serializable {
         return uid;
     }
 
-    public Object buildDTO() {
+    @Override
+    public Map<String, Object> toDto() {
         final Map<String, Object> dto = new HashMap<>();
         dto.put("nickname", this.nickname);
         dto.put("email", this.email);

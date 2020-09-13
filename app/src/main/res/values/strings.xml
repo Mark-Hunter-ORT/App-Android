@@ -6,6 +6,7 @@
     <string name="google_id">google_id</string>
     <string name="nickname">Nickname</string>
     <string name="email">email</string>
-    <string name="create">Create</string>
+    <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="edit">edit</string>
 </resources>
