@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.markhunters.R;
+import com.example.markhunters.dao.FindCallback;
 import com.example.markhunters.dao.DaoProvider;
 import com.example.markhunters.model.UserModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -69,13 +70,17 @@ public class SignInActivity extends UserActivity {
      */
     private void onLoggedIn(@NotNull final FirebaseUser firebaseUser) {
         final String uid = firebaseUser.getUid();
-        final UserModel userModel = DaoProvider.getUserDao().find(uid);
-        if (userModel == null) {
-            final UserModel model = UserModel.createNew(uid, firebaseUser.getEmail());
-            startUserFormActivity(model); // creation
-        }
-        else startMainActivity(userModel);
-        finish();
+        DaoProvider.getUserDao().find(uid, new FindCallback<UserModel>() {
+            @Override
+            public void onFindCallback(UserModel userModel) {
+                if (userModel == null) {
+                    final UserModel model = UserModel.createNew(uid, firebaseUser.getEmail());
+                    startUserFormActivity(model); // creation
+                }
+                else startMainActivity(userModel);
+                finish();
+            }
+        });
     }
 
     @Override

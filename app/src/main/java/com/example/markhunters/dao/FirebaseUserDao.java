@@ -26,7 +26,7 @@ public class FirebaseUserDao implements Dao<UserModel> {
 
     @Override
     @Nullable
-    public UserModel find(@NotNull final String uid) {
+    public UserModel find(@NotNull final String uid, FindCallback<UserModel> callback) {
         final DocumentReference userReference = dbCollection.document(uid);
         userReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -34,21 +34,29 @@ public class FirebaseUserDao implements Dao<UserModel> {
                 if (user != null && user.exists()) {
                     final String nickname = user.getString("nickname");
                     final String email = user.getString("email");
-                    model = new UserModel(uid, nickname, email);
+                    callback.onFindCallback(new UserModel(uid, nickname, email));
+                } else {
+                    callback.onFindCallback(null);
                 }
             }
         });
-        return model;
+        return null;
     }
 
     @Override
-    public Task<Void> persist(@NotNull final UserModel model) {
-        final UserModel persisted = find(model.getUid());
-        if (persisted != null) {
-            return update(model);// todo return update();
-        } else {
-            return create(model);
-        }
+    public Task<Void> persist(@NotNull final UserModel model, PersistCallback<Void> callback) {
+        find(model.getUid(), new FindCallback<UserModel>() {
+            @Override
+            public void onFindCallback(UserModel persisted) {
+                if (persisted != null) {
+                    callback.onPersistCallback(update(model));// todo return update();
+                } else {
+                    callback.onPersistCallback(create(model));
+                }
+            }
+        });
+
+        return null;
     }
 
     @Override

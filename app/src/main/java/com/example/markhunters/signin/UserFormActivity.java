@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.markhunters.R;
+import com.example.markhunters.dao.FindCallback;
+import com.example.markhunters.dao.PersistCallback;
 import com.example.markhunters.model.UserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -51,17 +53,26 @@ public class UserFormActivity extends UserActivity {
                 if (validateFields()) {
                     Toast.makeText(UserFormActivity.this, "User saved.", Toast.LENGTH_SHORT).show();
                     final UserModel toPersist = new UserModel(uid, nicknamePlainText.getText().toString(), emailTextView.getText().toString());
-                    final Task<Void> persistenceTask = dao.persist(toPersist);
-                    persistenceTask.addOnCompleteListener(new OnCompleteListener<Void>() {
+                    dao.persist(toPersist, new PersistCallback<Void>() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            final UserModel persisted = dao.find(uid); // retrieve the user that was just created
-                            if (persisted != null) {
-                                startMainActivity(persisted);
-                            }
-                            // Todo else ERROR
+                        public void onPersistCallback(Task<Void> task) {
+                            task.addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    dao.find(uid, new FindCallback<UserModel>() {
+                                        @Override
+                                        public void onFindCallback(UserModel model) {
+                                            if (model != null) {
+                                                startMainActivity(model); // retrieve the user that was just created
+                                            } // Todo else ERROR
+                                        }
+                                    });
+
+                                }
+                            });
                         }
                     });
+
                 }
             }
         });
