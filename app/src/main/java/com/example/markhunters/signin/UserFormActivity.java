@@ -51,19 +51,24 @@ public class UserFormActivity extends UserActivity {
             @Override
             public void onClick(View view) {
                 if (validateFields()) {
+                    // build the model that will be inserted in the database
                     final UserModel toPersist = new UserModel(uid, nicknamePlainText.getText().toString(), emailTextView.getText().toString());
+
+                    // persist method results in a Firebase task that is passed by callback
                     dao.persist(toPersist, new DaoCallback<UserModel>() {
                         @Override
                         public void onTaskCallback(Task<Void> task) {
                             task.addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
+                                    // When this point is reached it means Firebase finished persisting the new user
                                     Toast.makeText(UserFormActivity.this, "User saved.", Toast.LENGTH_SHORT).show();
+                                    // To avoid inconsistencies, discard toPersist model and retrieve the user that was just created
                                     dao.find(uid, new DaoCallback<UserModel>() {
                                         @Override
                                         public void onActionCallback(UserModel model) {
                                             if (model != null) {
-                                                startMainActivity(model); // retrieve the user that was just created
+                                                startMainActivity(model);
                                             } // Todo else ERROR
                                         }
                                     });
@@ -74,9 +79,8 @@ public class UserFormActivity extends UserActivity {
                 }
             }
         });
-        // Cancel, go back to signin
-        final Button cancelButton = findViewById(R.id.cancelButton);
 
+        final Button cancelButton = findViewById(R.id.cancelButton);
         /**
          * originalModel is an existing one that is being edited.
          * If cancel button is invoked signout must be avoided.
