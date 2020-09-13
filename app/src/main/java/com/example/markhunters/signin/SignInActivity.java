@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.markhunters.R;
-import com.example.markhunters.dao.FindCallback;
+import com.example.markhunters.dao.DaoCallback;
 import com.example.markhunters.dao.DaoProvider;
 import com.example.markhunters.model.UserModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -65,19 +65,18 @@ public class SignInActivity extends UserActivity {
     }
 
     /**
-     * Last step. FirebaseUser is already authenticated. Navigate to MainActivity with user from database or go to UserCreationActivity to register it
+     * Last step. FirebaseUser is already authenticated. Navigate to MainActivity with user from database or go to UserCreationActivity to register a new one
      * @param firebaseUser firebaseUser
      */
     private void onLoggedIn(@NotNull final FirebaseUser firebaseUser) {
         final String uid = firebaseUser.getUid();
-        DaoProvider.getUserDao().find(uid, new FindCallback<UserModel>() {
+        DaoProvider.getUserDao().find(uid, new DaoCallback<UserModel>() {
             @Override
-            public void onFindCallback(UserModel userModel) {
+            public void onActionCallback(UserModel userModel) {
                 if (userModel == null) {
                     final UserModel model = UserModel.createNew(uid, firebaseUser.getEmail());
                     startUserFormActivity(model); // creation
-                }
-                else startMainActivity(userModel);
+                } else startMainActivity(userModel); // user exists, go to main activity
                 finish();
             }
         });
