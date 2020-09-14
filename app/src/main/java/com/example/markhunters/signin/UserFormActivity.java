@@ -9,13 +9,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
 import com.example.markhunters.R;
 import com.example.markhunters.dao.DaoCallback;
 import com.example.markhunters.model.UserModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 public class UserFormActivity extends UserActivity {
 
@@ -53,27 +49,13 @@ public class UserFormActivity extends UserActivity {
                 if (validateFields()) {
                     // build the model that will be inserted in the database
                     final UserModel toPersist = new UserModel(uid, nicknamePlainText.getText().toString(), emailTextView.getText().toString());
-
-                    // persist method results in a Firebase task that is passed by callback
                     dao.persist(toPersist, new DaoCallback<UserModel>() {
                         @Override
-                        public void onTaskCallback(Task<Void> task) {
-                            task.addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    // When this point is reached it means Firebase finished persisting the new user
-                                    Toast.makeText(UserFormActivity.this, "User saved.", Toast.LENGTH_SHORT).show();
-                                    // To avoid inconsistencies, discard toPersist model and retrieve the user that was just created
-                                    dao.find(uid, new DaoCallback<UserModel>() {
-                                        @Override
-                                        public void onActionCallback(UserModel model) {
-                                            if (model != null) {
-                                                startMainActivity(model);
-                                            } // Todo else ERROR
-                                        }
-                                    });
-                                }
-                            });
+                        public void onCallback(UserModel model) {
+                            if (model != null) {
+                                Toast.makeText(UserFormActivity.this, "User saved.", Toast.LENGTH_SHORT).show();
+                                startMainActivity(model);
+                            } // Todo else ERROR
                         }
                     });
                 }
