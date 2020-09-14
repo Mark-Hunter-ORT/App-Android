@@ -9,4 +9,5 @@ public abstract class Model implements Serializable {
      * Do not include key/id value as it is set separately.
      */
     public abstract Map<String, Object> toDto();
+    public abstract String getKey();
 }

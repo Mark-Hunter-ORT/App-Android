@@ -51,4 +51,9 @@ public class UserModel extends Model {
         dto.put("email", this.email);
         return dto;
     }
+
+    @Override
+    public String getKey() {
+        return getUid();
+    }
 }
