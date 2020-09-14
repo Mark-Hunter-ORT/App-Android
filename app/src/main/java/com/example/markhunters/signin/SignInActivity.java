@@ -86,7 +86,7 @@ public class SignInActivity extends UserActivity {
     protected void onStart() {
         super.onStart();
         // check if a user is already logged
-        FirebaseUser currentUser = fAuth.getCurrentUser();
+        final FirebaseUser currentUser = fAuth.getCurrentUser();
         if (currentUser != null) {
             onLoggedIn(currentUser);
         }

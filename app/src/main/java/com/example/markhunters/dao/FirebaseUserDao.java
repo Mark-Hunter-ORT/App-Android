@@ -11,9 +11,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class FirebaseUserDao implements Dao<UserModel> {
+public class FirebaseUserDao extends Dao<UserModel> {
     private final String USER_COLLECTION = "users";
     private final FirebaseFirestore fStore;
     private final CollectionReference dbCollection;
@@ -42,39 +41,25 @@ public class FirebaseUserDao implements Dao<UserModel> {
     }
 
     @Override
-    public void persist(@NotNull final UserModel model, DaoCallback<UserModel> callback) {
-        find(model.getUid(), new DaoCallback<UserModel>() {
-            @Override
-            public void onCallback(@Nullable final UserModel persisted) {
-                if (persisted != null) {
-                    update(model, callback);
-                } else {
-                    create(model, callback);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void update(@NotNull final UserModel model, DaoCallback<UserModel> callback) {
-        final String uid = model.getUid();
-        final DocumentReference userReference = fStore.collection("users").document(uid);
+    protected void update(@NotNull final UserModel model, DaoCallback<UserModel> callback) {
+        final String key = model.getKey();
+        final DocumentReference userReference = fStore.collection("users").document(key);
         userReference.update("nickname", model.getNickname()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                find(model.getUid(), callback);
+                find(key, callback);
             }
         });
     }
 
     @Override
-    public void create(@NotNull final UserModel model, DaoCallback<UserModel> callback) {
-        final String uid = model.getUid();
-        final DocumentReference userReference = fStore.collection("users").document(uid);
+    protected void create(@NotNull final UserModel model, DaoCallback<UserModel> callback) {
+        final String key = model.getKey();
+        final DocumentReference userReference = fStore.collection("users").document(key);
         userReference.set(model.toDto()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                find(model.getUid(), callback);
+                find(key, callback);
             }
         });
     }
