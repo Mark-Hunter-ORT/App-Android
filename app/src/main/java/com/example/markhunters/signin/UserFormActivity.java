@@ -47,6 +47,7 @@ public class UserFormActivity extends UserActivity {
             @Override
             public void onClick(View view) {
                 if (validateFields()) {
+                    loadingDialog.start();
                     // build the model that will be inserted in the database
                     final UserModel toPersist = new UserModel(uid, nicknamePlainText.getText().toString(), emailTextView.getText().toString());
                     dao.persist(toPersist, new DaoCallback<UserModel>() {
@@ -55,6 +56,7 @@ public class UserFormActivity extends UserActivity {
                             if (model != null) {
                                 Toast.makeText(UserFormActivity.this, "User saved.", Toast.LENGTH_SHORT).show();
                                 startMainActivity(model);
+                                loadingDialog.dismiss();
                             } // Todo else ERROR
                         }
                     });

@@ -13,6 +13,7 @@ import com.example.markhunters.R;
 import com.example.markhunters.dao.Dao;
 import com.example.markhunters.dao.DaoProvider;
 import com.example.markhunters.model.UserModel;
+import com.example.markhunters.ui.LoadingDialog;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -32,6 +33,7 @@ public class UserActivity extends AppCompatActivity {
     protected Dao<UserModel> dao;
     protected GoogleSignInOptions gso;
     protected GoogleSignInClient gsc;
+    protected LoadingDialog loadingDialog = null;
 
     /**
      * Just a setup
@@ -53,12 +55,15 @@ public class UserActivity extends AppCompatActivity {
 
         // Dao setup
         dao = DaoProvider.getUserDao();
+
+        loadingDialog = new LoadingDialog(this);
     }
 
     /**
      * Calls both Firebase and Google sign out service for full cache clearance
      */
     private void signout() {
+        loadingDialog.start();
         fAuth.signOut(); // clear user data
         gsc.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -66,6 +71,7 @@ public class UserActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                loadingDialog.dismiss();
             }
         });
     }
