@@ -34,7 +34,7 @@ public class SignInActivity extends UserActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        
+
         final SignInButton gsButton = findViewById(R.id.sign_in_button);
         gsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +77,7 @@ public class SignInActivity extends UserActivity {
                     final UserModel model = UserModel.createNew(uid, firebaseUser.getEmail());
                     startUserFormActivity(model); // creation
                 } else startMainActivity(userModel); // user exists, go to main activity
+                loadingDialog.dismiss();
                 finish();
             }
         });
@@ -97,6 +98,7 @@ public class SignInActivity extends UserActivity {
      * @param idToken idToken
      */
     private void firebaseAuthWithGoogle(String idToken) {
+        loadingDialog.start();
         final AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         fAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
