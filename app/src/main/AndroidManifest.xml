@@ -9,9 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".signin.UserFormActivity"></activity>
+        <activity android:name=".signin.UserFormActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".signin.SignInActivity">
+        <activity android:name=".ImageTakerExample">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
