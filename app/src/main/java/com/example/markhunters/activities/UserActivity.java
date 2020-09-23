@@ -1,4 +1,4 @@
-package com.example.markhunters.signin;
+package com.example.markhunters.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.markhunters.MainActivity;
+import com.example.markhunters.activities.MainActivity;
 import com.example.markhunters.R;
 import com.example.markhunters.dao.Dao;
 import com.example.markhunters.dao.DaoProvider;

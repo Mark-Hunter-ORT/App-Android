@@ -20,15 +20,14 @@ public class LoadingDialog {
 
     public LoadingDialog(@NotNull final Activity activity) {
         this.activity = activity;
-    }
-
-    public void start () {
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         final LayoutInflater inflater = activity.getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.spinner_dialog, null));
         builder.setCancelable(false);
-
         dialog = builder.create();
+    }
+
+    public void start () {
         dialog.show();
     }
 

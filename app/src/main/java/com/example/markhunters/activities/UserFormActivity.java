@@ -1,4 +1,4 @@
-package com.example.markhunters.signin;
+package com.example.markhunters.activities;
 
 import android.os.Bundle;
 import android.text.TextUtils;

@@ -1,12 +1,12 @@
-package com.example.markhunters;
+package com.example.markhunters.activities;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.markhunters.R;
 import com.example.markhunters.model.UserModel;
-import com.example.markhunters.signin.UserActivity;
 
 public class MainActivity extends UserActivity {
 
