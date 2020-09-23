@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.markhunters.MainActivity;
 import com.example.markhunters.R;
+import com.example.markhunters.activities.MenuActivity;
 import com.example.markhunters.dao.Dao;
 import com.example.markhunters.dao.DaoProvider;
 import com.example.markhunters.model.UserModel;
@@ -62,7 +63,7 @@ public class UserActivity extends AppCompatActivity {
     /**
      * Calls both Firebase and Google sign out service for full cache clearance
      */
-    private void signout() {
+    public void signout() {
         loadingDialog.start();
         fAuth.signOut(); // clear user data
         gsc.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -79,6 +80,12 @@ public class UserActivity extends AppCompatActivity {
     protected void startMainActivity(@NotNull final UserModel model) {
         final Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(MainActivity.USER_MODEL, model);
+        startActivity(intent);
+    }
+
+    protected void startMenuActivity(@NotNull final UserModel model) {
+        final Intent intent = new Intent(this, MenuActivity.class);
+        intent.putExtra(MenuActivity.USER_MODEL, model);
         startActivity(intent);
     }
 

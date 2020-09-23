@@ -76,7 +76,7 @@ public class SignInActivity extends UserActivity {
                 if (userModel == null) {
                     final UserModel model = UserModel.createNew(uid, firebaseUser.getEmail());
                     startUserFormActivity(model); // creation
-                } else startMainActivity(userModel); // user exists, go to main activity
+                } else startMenuActivity(userModel); // user exists, go to main activity
                 loadingDialog.dismiss();
                 finish();
             }
