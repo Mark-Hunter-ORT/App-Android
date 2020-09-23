@@ -1,4 +1,4 @@
-package com.example.markhunters.signin;
+package com.example.markhunters.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -76,7 +76,10 @@ public class SignInActivity extends UserActivity {
                 if (userModel == null) {
                     final UserModel model = UserModel.createNew(uid, firebaseUser.getEmail());
                     startUserFormActivity(model); // creation
-                } else startMainActivity(userModel); // user exists, go to main activity
+                } else {
+                    Intent intent = new Intent(SignInActivity.this, MenuActivity.class);
+                    startActivity(intent);
+                }
                 loadingDialog.dismiss();
                 finish();
             }
