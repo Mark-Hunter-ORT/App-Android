@@ -11,6 +11,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.markhunters.R;
 import com.example.markhunters.fragments.MapFragment;
+import com.example.markhunters.fragments.PictureTestFragment;
 import com.example.markhunters.fragments.ProfileFragment;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.signin.UserActivity;
@@ -59,6 +60,9 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
                 break;
             case R.id.map:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MapFragment()).commit();
+                break;
+            case R.id.takePictureTest:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PictureTestFragment()).commit();
                 break;
             case R.id.exit:
                 signout();
