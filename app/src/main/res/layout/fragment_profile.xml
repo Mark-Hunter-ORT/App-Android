@@ -7,9 +7,9 @@
         android:id="@+id/nicknameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Placeholder text"
         android:layout_centerInParent="true"
-        />
+        android:text="@string/placeholder_text"
+        android:textSize="24sp" />
 
 
 </RelativeLayout>

@@ -68,7 +68,6 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
     }
 
     private void setDataOnView() {
-        final UserModel userModel = (UserModel) getIntent().getSerializableExtra(USER_MODEL);
-        user = userModel;
+        user = (UserModel) getIntent().getSerializableExtra(USER_MODEL);
     }
 }
