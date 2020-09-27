@@ -5,7 +5,7 @@
     <string name="username">username</string>
     <string name="google_id">google_id</string>
     <string name="nickname">Nickname</string>
-    <string name="email">email</string>
+    <string name="email">Email</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="edit">edit</string>
@@ -18,5 +18,6 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="placeholder_text">Placeholder text</string>
+    <string name="user_form">User Form</string>
 
 </resources>
