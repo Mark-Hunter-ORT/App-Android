@@ -3,6 +3,10 @@ package com.example.markhunters.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.example.markhunters.R;
 
@@ -18,9 +22,16 @@ public class LoadingDialog {
     private AlertDialog dialog;
 
     public LoadingDialog(@NotNull final Activity activity) {
+        this(activity, "Loading"); // default message
+    }
+
+    public LoadingDialog(@NotNull final Activity activity, @NotNull final String loadingMessage) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         final LayoutInflater inflater = activity.getLayoutInflater();
-        builder.setView(inflater.inflate(R.layout.spinner_dialog, null));
+        View inflatedView = inflater.inflate(R.layout.spinner_dialog, null);
+        TextView loadingTextView = inflatedView.findViewById(R.id.loadingTextView);
+        loadingTextView.setText(loadingMessage);
+        builder.setView(inflatedView);
         builder.setCancelable(false);
         dialog = builder.create();
     }
