@@ -32,6 +32,7 @@ public class PictureTestFragment extends Fragment
 {
     private ImageView mImageView;
     private Button uploadButton;
+    private Bitmap mBitmap; // todo this is what has to be stored in Firebase
     private static final int CAMERA_REQUEST_CODE = 1001;
 
     @Nullable
@@ -56,7 +57,7 @@ public class PictureTestFragment extends Fragment
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Todo: This is just a placeholder. Here we should call a DAO and store the picture in Firebase.
+                // Todo: This is just a placeholder. Here we should call a DAO and store mBitmap in Firebase.
                 LoadingDialog loadingDialog = new LoadingDialog(getActivity(), "Uploading...");
                 loadingDialog.start();
                 (new Handler()).postDelayed(() -> {
@@ -76,6 +77,7 @@ public class PictureTestFragment extends Fragment
             if (resultCode == RESULT_OK) {
                 final Bitmap bitmap = (Bitmap) data.getExtras().get("data");
                 mImageView.setImageBitmap(bitmap);
+                mBitmap = bitmap; // todo this is what has to be stored in Firebase
                 uploadButton.setEnabled(mImageView != null);
             }
         }
