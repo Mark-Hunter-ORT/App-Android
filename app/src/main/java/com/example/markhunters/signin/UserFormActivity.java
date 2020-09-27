@@ -24,7 +24,7 @@ public class UserFormActivity extends UserActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_creation);
+        setContentView(R.layout.activity_user_form);
 
         // View data setup
         nicknamePlainText = findViewById(R.id.nicknamePlainText);
@@ -55,7 +55,7 @@ public class UserFormActivity extends UserActivity {
                         public void onCallback(UserModel model) {
                             if (model != null) {
                                 Toast.makeText(UserFormActivity.this, "User saved.", Toast.LENGTH_SHORT).show();
-                                startMainActivity(model);
+                                startMenuActivity(model);
                                 loadingDialog.dismiss();
                             } // Todo else ERROR
                         }
@@ -74,7 +74,7 @@ public class UserFormActivity extends UserActivity {
             cancelButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startMainActivity(originalModel);
+                    startMenuActivity(originalModel);
                 }
             });
         } else {

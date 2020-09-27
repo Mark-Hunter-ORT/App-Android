@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.markhunters.MainActivity;
 import com.example.markhunters.R;
 import com.example.markhunters.activities.MenuActivity;
 import com.example.markhunters.dao.Dao;
@@ -77,19 +76,13 @@ public class UserActivity extends AppCompatActivity {
         });
     }
 
-    protected void startMainActivity(@NotNull final UserModel model) {
-        final Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(MainActivity.USER_MODEL, model);
-        startActivity(intent);
-    }
-
     protected void startMenuActivity(@NotNull final UserModel model) {
         final Intent intent = new Intent(this, MenuActivity.class);
         intent.putExtra(MenuActivity.USER_MODEL, model);
         startActivity(intent);
     }
 
-    protected void startUserFormActivity(@NotNull final UserModel model) {
+    public void startUserFormActivity(@NotNull final UserModel model) {
         final Intent intent = new Intent(this, UserFormActivity.class);
         intent.putExtra(UserFormActivity.USER_MODEL, model);
         startActivity(intent);
