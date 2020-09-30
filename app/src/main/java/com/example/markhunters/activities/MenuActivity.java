@@ -58,7 +58,7 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
             case R.id.profile:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment(user)).commit();
                 break;
-            case R.id.map:
+            case R.id.menu_map:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MapFragment()).commit();
                 break;
             case R.id.takePictureTest:
