@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <EditText
+        android:id="@+id/editTextZRotation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/z_rotation_label"
+        android:inputType="textPersonName"
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/z_rotation_input" />
+
+    <EditText
+        android:id="@+id/editTextXMovement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/x_movement_label"
+        android:inputType="textPersonName"
+        android:layout_below="@+id/editTextZRotation"
+        android:layout_centerHorizontal="true"
+        android:text="@string/x_movement_input" />
+
+    <Button
+        android:id="@+id/startListeningBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editTextXMovement"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:text="@string/start_listening" />
+
+
+</RelativeLayout>

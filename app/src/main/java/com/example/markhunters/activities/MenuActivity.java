@@ -13,6 +13,7 @@ import com.example.markhunters.R;
 import com.example.markhunters.fragments.MapFragment;
 import com.example.markhunters.fragments.PictureTestFragment;
 import com.example.markhunters.fragments.ProfileFragment;
+import com.example.markhunters.fragments.SensorTestFragment;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.signin.UserActivity;
 import com.google.android.material.navigation.NavigationView;
@@ -63,6 +64,9 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
                 break;
             case R.id.takePictureTest:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PictureTestFragment()).commit();
+                break;
+            case R.id.sensorTest:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SensorTestFragment()).commit();
                 break;
             case R.id.exit:
                 signout();

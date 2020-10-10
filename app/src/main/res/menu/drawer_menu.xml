@@ -15,6 +15,10 @@
             android:id="@+id/takePictureTest"
             android:icon="@drawable/ic_take_picture_test"
             android:title="@string/take_a_picture" />
+        <item
+            android:id="@+id/sensorTest"
+            android:icon="@drawable/ic_sensor_test"
+            android:title="@string/sensor_test" />
     </group>
     <item android:title="@string/actions">
         <menu>
