@@ -58,8 +58,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         map = googleMap;
         enableMyLocation();
         LatLng sydney = new LatLng (-34, 151);
-        map.addMarker(new MarkerOptions().position(sydney).title("Prueba").icon(bitmapDescriptorFromVector(getContext(), R.drawable.ic_mark_hunters_mark)));
+        addMarker(sydney, "Prueba");
         map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    private void addMarker(LatLng latLng, String title) {
+        map.addMarker(new MarkerOptions().position(latLng).title(title).icon(bitmapDescriptorFromVector(getContext(), R.drawable.ic_mark_hunters_mark)));
     }
 
     private void enableMyLocation() {
