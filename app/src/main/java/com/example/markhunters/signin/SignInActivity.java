@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +37,8 @@ public class SignInActivity extends UserActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         final SignInButton gsButton = findViewById(R.id.sign_in_button);
         gsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,6 +46,16 @@ public class SignInActivity extends UserActivity {
                 // Here we should check internet connection
                 final Intent signInIntent = gsc.getSignInIntent();
                 startActivityForResult(signInIntent, RC_SIGN_IN);
+            }
+        });
+
+        // salir de la app
+        final Button exitButton = findViewById(R.id.exit_button);
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+                System.exit(0);
             }
         });
     }

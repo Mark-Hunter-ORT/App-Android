@@ -2,6 +2,7 @@ package com.example.markhunters.activities;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -28,6 +29,8 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
         setContentView(R.layout.activity_menu);
         setDataOnView();
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -38,8 +41,8 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment(user)).commit();
-            navigationView.setCheckedItem(R.id.profile);
+            navigate(R.id.menu_map);
+            navigationView.setCheckedItem(R.id.menu_map);
         }
     }
 
@@ -54,7 +57,12 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
+        navigate(item.getItemId());
+        return true;
+    }
+
+    private void navigate(int itemId) {
+        switch (itemId) {
             case R.id.profile:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment(user)).commit();
                 break;
@@ -64,11 +72,10 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
             case R.id.takePictureTest:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PictureTestFragment()).commit();
                 break;
-            case R.id.exit:
+            case R.id.signout:
                 signout();
         }
         drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     private void setDataOnView() {

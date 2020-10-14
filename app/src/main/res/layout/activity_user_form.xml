@@ -15,7 +15,6 @@
         android:layout_width="112dp"
         android:layout_height="56dp"
         android:layout_marginTop="132dp"
-        android:backgroundTint="#6FB7F1"
         android:text="@string/save"
         app:layout_constraintEnd_toStartOf="@+id/cancelButton"
         app:layout_constraintHorizontal_bias="0.626"
@@ -28,7 +27,6 @@
         android:layout_height="56dp"
         android:layout_marginTop="132dp"
         android:layout_marginEnd="72dp"
-        android:backgroundTint="#E3AA98"
         android:text="@string/cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailTextView" />
@@ -39,7 +37,6 @@
         android:layout_height="wrap_content"
         android:autofillHints=""
         android:ems="10"
-        android:hint="@string/nickname"
         android:inputType="textPersonName"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"

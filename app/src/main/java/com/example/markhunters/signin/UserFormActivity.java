@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,6 +31,8 @@ public class UserFormActivity extends UserActivity {
         nicknamePlainText = findViewById(R.id.nicknamePlainText);
         emailTextView =  findViewById(R.id.emailTextView);
         setDataOnView();
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // hide input keyboard when clicking outside
         findViewById(R.id.constraintLayout).setOnTouchListener(new View.OnTouchListener() {
