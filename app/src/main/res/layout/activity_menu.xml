@@ -16,10 +16,12 @@
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:background="@color/colorPrimary"
+            android:theme="@style/AppTheme"
+            android:background="#C60A06"
+            app:titleTextColor="#FFFFFF"
+            app:subtitleTextColor="#FFFFFF"
             android:id="@+id/toolbar"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:popupTheme="@style/AppTheme"
             android:elevation="4dp" />
         <FrameLayout
             android:layout_width="match_parent"

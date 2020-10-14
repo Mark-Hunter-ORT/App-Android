@@ -22,7 +22,7 @@ public class LoadingDialog {
     private AlertDialog dialog;
 
     public LoadingDialog(@NotNull final Activity activity) {
-        this(activity, "Loading"); // default message
+        this(activity, "Cargando"); // default message
     }
 
     public LoadingDialog(@NotNull final Activity activity, @NotNull final String loadingMessage) {

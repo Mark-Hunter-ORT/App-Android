@@ -58,11 +58,11 @@ public class PictureTestFragment extends Fragment
             @Override
             public void onClick(View view) {
                 // Todo: This is just a placeholder. Here we should call a DAO and store mBitmap in Firebase.
-                LoadingDialog loadingDialog = new LoadingDialog(getActivity(), "Uploading...");
+                LoadingDialog loadingDialog = new LoadingDialog(getActivity(), "Subiendo");
                 loadingDialog.start();
                 (new Handler()).postDelayed(() -> {
                     loadingDialog.dismiss();
-                    Toast.makeText(getContext(), "Picture uploaded!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Foto subida!", Toast.LENGTH_SHORT).show();
                 }, 5000); // dismiss the dialog after 5 seconds. Show success message toast.
             }
         });
