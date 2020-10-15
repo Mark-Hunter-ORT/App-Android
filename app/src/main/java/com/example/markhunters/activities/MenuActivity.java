@@ -3,6 +3,8 @@ package com.example.markhunters.activities;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -16,10 +18,12 @@ import com.example.markhunters.fragments.PictureTestFragment;
 import com.example.markhunters.fragments.ProfileFragment;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.signin.UserActivity;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.navigation.NavigationView;
 
 public class MenuActivity extends UserActivity implements NavigationView.OnNavigationItemSelectedListener {
     public static final String USER_MODEL = "user_model";
+    public static final String GOOGLE_ACCOUNT = "google_account";
     private DrawerLayout drawer;
     private UserModel user;
 
@@ -35,8 +39,17 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        GoogleSignInAccount googleSignInAccount = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
+        TextView mName = navigationView.getHeaderView(0).findViewById(R.id.textViewName);
+
+        ImageView mPic = navigationView.getHeaderView(0).findViewById(R.id.imageView);
+        mName.setText(googleSignInAccount.getDisplayName());
+
+        mPic.setImageURI(googleSignInAccount.getPhotoUrl());
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();

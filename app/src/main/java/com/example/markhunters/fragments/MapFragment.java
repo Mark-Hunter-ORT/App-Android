@@ -34,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     MapView mapView = null;
+
     GoogleMap map;
     final int LOCATION_PERMISSION_REQUEST_CODE = 1252;
 
@@ -59,7 +60,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         enableMyLocation();
         LatLng sydney = new LatLng (-34, 151);
         addMarker(sydney, "Prueba");
+        LatLng buenosaires= new LatLng (-34.6083, -58.3712);
+
         map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        addMarker(buenosaires,"el capo");
+
     }
 
     private void addMarker(LatLng latLng, String title) {
