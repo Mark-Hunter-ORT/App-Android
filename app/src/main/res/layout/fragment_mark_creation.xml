@@ -14,21 +14,34 @@
 
     <Button
         android:id="@+id/takePictureBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="174dp"
+        android:layout_height="59dp"
         android:layout_below="@+id/cameraView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
-        android:text="@string/take_picture" />
+        android:text="@string/take_a_picture" />
 
     <Button
-        android:id="@+id/uploadPictureButton"
-        android:layout_width="wrap_content"
+        android:id="@+id/saveMarkButton"
+        android:layout_width="115dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/takePictureBtn"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:text="@string/upload" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="49dp"
+        android:text="@string/save" />
+
+    <Button
+        android:id="@+id/cancelMarkButton"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/takePictureBtn"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="54dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="86dp"
+        android:layout_toStartOf="@+id/saveMarkButton"
+        android:text="@string/cancel" />
 
     <ProgressBar
         android:id="@+id/progressBar"

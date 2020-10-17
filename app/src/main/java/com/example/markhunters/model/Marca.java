@@ -1,19 +1,33 @@
 package com.example.markhunters.model;
 
-public class Marca {
+import android.location.Location;
+
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Map;
+
+public class Marca extends Model {
     double lat, lon;
     String userId, imageId, text;
-    Marca(double lat,double lon,String userId,String imageId,String text){
+    Marca (double lat,double lon,String userId,String imageId,String text){
         setImageId(imageId);
         setLat(lat);
         setLon(lon);
         setUserId(userId);
         setText(text);
-
+    }
+    public Marca (Location location) {
+        setLat(location.getLatitude());
+        setLon(location.getLongitude());
     }
 
     public double getLat() {
         return lat;
+    }
+
+    public LatLng getLatLng() {
+        return new LatLng (lat, lon);
     }
 
     public double getLon() {
@@ -32,7 +46,7 @@ public class Marca {
         return text;
     }
 
-    private void setImageId(String imageId) {
+    public void setImageId(String imageId) {
         this.imageId = imageId;
     }
 
@@ -50,5 +64,15 @@ public class Marca {
 
     private void setText(String text) {
         this.text = text;
+    }
+
+    @Override
+    public Map<String, Object> toDto() {
+        return null;
+    }
+
+    @Override
+    public String getKey() {
+        return null;
     }
 }

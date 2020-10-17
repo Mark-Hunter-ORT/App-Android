@@ -1,12 +1,13 @@
 package com.example.markhunters.fragments;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 import com.example.markhunters.R;
-import com.google.android.gms.maps.CameraUpdateFactory;
+import com.example.markhunters.model.Marca;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -32,17 +32,56 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.jetbrains.annotations.NotNull;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
+public class MapFragment extends MarkFragment implements OnMapReadyCallback {
     MapView mapView = null;
 
     GoogleMap map;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    private Location currentLocation;
     final int LOCATION_PERMISSION_REQUEST_CODE = 1252;
+    private final String PAYLOAD_KEY = "Mark";
+    private Marca mark; // Todo debería usar generics acá?
+
+    public MapFragment () {
+        super();
+        setPayloadKey(PAYLOAD_KEY);
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_map, container, false);
+        View root = inflater.inflate(R.layout.fragment_map, container, false);
+        initEnvironment();
+        if (getArguments() != null) {
+            mark = (Marca) getArguments().getSerializable(getPayloadKey());
+        }
+        View addMarkButton = root.findViewById(R.id.addMarkButton);
+        addMarkButton.setOnClickListener(new MarkButtonListener());
+        return root;
     }
+
+
+    private class MarkButtonListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            if (currentLocation != null) {
+                mark = new Marca(currentLocation);
+                activity.goToFragment(new MarkCreationFragment(), mark);
+            }
+        }
+    }
+
+    private class MarkLocationListener implements LocationListener {
+        @Override
+        public void onLocationChanged(@NonNull Location location) {
+            currentLocation = location;
+        }
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -55,31 +94,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        MapsInitializer.initialize(getContext());
+        MapsInitializer.initialize(context);
         map = googleMap;
-        enableMyLocation();
-        LatLng sydney = new LatLng (-34, 151);
-        addMarker(sydney, "Prueba");
-        LatLng buenosaires= new LatLng (-34.6083, -58.3712);
-
-        map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        initLocationServices();
+        LatLng buenosaires = new LatLng (-34.6083, -58.3712);
         addMarker(buenosaires,"el capo");
-
+        if (mark != null && mark.getImageId() != null) { // todo como distingo marca persistida? Veo el id?
+            addMarker(mark.getLatLng(), mark.getImageId());
+        }
     }
 
     private void addMarker(LatLng latLng, String title) {
-        map.addMarker(new MarkerOptions().position(latLng).title(title).icon(bitmapDescriptorFromVector(getContext(), R.drawable.ic_mark_hunters_mark)));
+        map.addMarker(new MarkerOptions().position(latLng).title(title).icon(bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark)));
     }
 
-    private void enableMyLocation() {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) && shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                Toast.makeText(getContext(), "El permiso de ubicación es necesario para obtener la ubicación actual", Toast.LENGTH_SHORT).show();
-                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+    private void initLocationServices() {
+        if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION) && shouldShowRequestPermissionRationale(ACCESS_COARSE_LOCATION)) {
+                Toast.makeText(context, "El permiso de ubicación es necesario para obtener la ubicación actual", Toast.LENGTH_SHORT).show();
+                requestPermissions(new String[]{ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
             }
         } else {
             if (map != null) {
                 map.setMyLocationEnabled(true);
+                locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+                locationListener = new MarkLocationListener();
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1,
+                        1, locationListener);
             }
         }
     }
@@ -88,9 +129,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                enableMyLocation();
+                initLocationServices();
             } else {
-                Toast.makeText(getContext(), "Permiso denegado", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Permiso denegado", Toast.LENGTH_SHORT).show();
             }
         }
     }

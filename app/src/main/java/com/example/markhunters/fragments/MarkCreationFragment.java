@@ -10,39 +10,43 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.example.markhunters.R;
-import com.example.markhunters.model.UserModel;
-import com.example.markhunters.signin.UserActivity;
-import com.example.markhunters.signin.UserFormActivity;
+import com.example.markhunters.model.Marca;
 import com.example.markhunters.ui.LoadingDialog;
-
-import org.jetbrains.annotations.NotNull;
 
 import static android.app.Activity.RESULT_OK;
 
-public class PictureTestFragment extends Fragment
+public class MarkCreationFragment extends MarkFragment
 {
     private ImageView mImageView;
     private Button uploadButton;
     private Bitmap mBitmap; // todo this is what has to be stored in Firebase
+    private Marca mark;
     private static final int CAMERA_REQUEST_CODE = 1001;
+    private final String PAYLOAD_KEY = "Mark";
+
+    public MarkCreationFragment() {
+        super();
+        setPayloadKey(PAYLOAD_KEY);
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_picture_test, container, false);
-
-        uploadButton = rootView.findViewById(R.id.uploadPictureButton);
+        initEnvironment();
+        View rootView = inflater.inflate(R.layout.fragment_mark_creation, container, false);
+        uploadButton = rootView.findViewById(R.id.saveMarkButton);
         uploadButton.setEnabled(false); // no picture to upload yet
         mImageView = rootView.findViewById(R.id.cameraView);
+
+        if (getArguments() != null) {
+            mark = (Marca) getArguments().getSerializable(getPayloadKey());
+        }
 
         // 'take a picture' button action
         rootView.findViewById(R.id.takePictureBtn).setOnClickListener(new View.OnClickListener() {
@@ -53,16 +57,25 @@ public class PictureTestFragment extends Fragment
             }
         });
 
+        rootView.findViewById(R.id.cancelMarkButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activity.goToFragment(new MapFragment());
+            }
+        });
+
         // 'upload' button action.
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Todo: This is just a placeholder. Here we should call a DAO and store mBitmap in Firebase.
-                LoadingDialog loadingDialog = new LoadingDialog(getActivity(), "Subiendo");
+                LoadingDialog loadingDialog = new LoadingDialog(activity, "Subiendo");
                 loadingDialog.start();
                 (new Handler()).postDelayed(() -> {
+                    mark.setImageId(mBitmap.toString()); // Todo llamamos a la persistencia acá? Cuando le ponemos el userId?
                     loadingDialog.dismiss();
-                    Toast.makeText(getContext(), "Foto subida!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Mark creada!", Toast.LENGTH_SHORT).show();
+                    activity.goToFragment(new MapFragment(), mark);
                 }, 5000); // dismiss the dialog after 5 seconds. Show success message toast.
             }
         });
