@@ -1,5 +1,9 @@
 package com.example.markhunters.model;
 
+import android.net.Uri;
+
+import com.google.firebase.auth.FirebaseUser;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,11 +14,26 @@ public class UserModel extends Model {
     private String uid;
     private String nickname;
     private String email;
+    private String photoStringUri;
+    private String displayName;
 
     public UserModel(@NotNull final String uid, @NotNull final String nickname, @NotNull final String email) {
         this.uid = uid;
         this.nickname = nickname;
         this.email = email;
+    }
+
+    public UserModel(String uid, String nickname, String email, String displayName, String photoStringUri) {
+        this.uid = uid;
+        this.nickname = nickname;
+        this.email = email;
+        this.photoStringUri = photoStringUri;
+        this.displayName = displayName;
+    }
+
+    public void setFirebaseData(FirebaseUser firebaseUser) {
+        this.photoStringUri = firebaseUser.getPhotoUrl().getPath();
+        this.displayName = firebaseUser.getDisplayName();
     }
 
     private UserModel(@NotNull final String uid, @NotNull final String email) {
@@ -55,5 +74,17 @@ public class UserModel extends Model {
     @Override
     public String getKey() {
         return getUid();
+    }
+
+    public String getPhotoStringUri() {
+        return photoStringUri;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public Uri getPhotoUri () {
+        return Uri.parse(photoStringUri);
     }
 }

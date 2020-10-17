@@ -3,35 +3,33 @@ package com.example.markhunters.model;
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Map;
 
 public class Marca extends Model {
-    double lat, lon;
+    com.example.markhunters.model.Location location;
     String userId, imageId, text;
-    Marca (double lat,double lon,String userId,String imageId,String text){
+    Marca (double lat,double lon, String userId, String imageId, String text){
         setImageId(imageId);
-        setLat(lat);
-        setLon(lon);
+        location = new com.example.markhunters.model.Location (lat, lon);
         setUserId(userId);
         setText(text);
     }
-    public Marca (Location location) {
-        setLat(location.getLatitude());
-        setLon(location.getLongitude());
+    public Marca (Location location, String userUid) {
+        this.location = new com.example.markhunters.model.Location(location.getLatitude(), location.getLongitude());
+        this.userId = userUid;
     }
 
     public double getLat() {
-        return lat;
+        return location.getLat();
     }
 
     public LatLng getLatLng() {
-        return new LatLng (lat, lon);
+        return new LatLng (getLat(), getLon());
     }
 
     public double getLon() {
-        return lon;
+        return location.getLon();
     }
 
     public String getImageId() {
@@ -50,19 +48,11 @@ public class Marca extends Model {
         this.imageId = imageId;
     }
 
-    private void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    private void setLon(double lon) {
-        this.lon = lon;
-    }
-
     private void setUserId(String userId) {
         this.userId = userId;
     }
 
-    private void setText(String text) {
+    public void setText(String text) {
         this.text = text;
     }
 

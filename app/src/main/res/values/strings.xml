@@ -26,4 +26,5 @@
     <string name="intro_subtitle">Cazadores de contenido</string>
     <string name="exit_button_label">Salir</string>
     <string name="mark_button">Mark</string>
+    <string name="mark_tag_hint">Ingrese una etiqueta</string>
 </resources>

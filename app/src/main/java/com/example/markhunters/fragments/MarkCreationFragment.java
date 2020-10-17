@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import static android.app.Activity.RESULT_OK;
 public class MarkCreationFragment extends MarkFragment
 {
     private ImageView mImageView;
+    private EditText markTagText;
     private Button uploadButton;
     private Bitmap mBitmap; // todo this is what has to be stored in Firebase
     private Marca mark;
@@ -43,7 +45,7 @@ public class MarkCreationFragment extends MarkFragment
         uploadButton = rootView.findViewById(R.id.saveMarkButton);
         uploadButton.setEnabled(false); // no picture to upload yet
         mImageView = rootView.findViewById(R.id.cameraView);
-
+        markTagText = rootView.findViewById(R.id.markTagEditText);
         if (getArguments() != null) {
             mark = (Marca) getArguments().getSerializable(getPayloadKey());
         }
@@ -73,6 +75,7 @@ public class MarkCreationFragment extends MarkFragment
                 loadingDialog.start();
                 (new Handler()).postDelayed(() -> {
                     mark.setImageId(mBitmap.toString()); // Todo llamamos a la persistencia acá? Cuando le ponemos el userId?
+                    mark.setText(markTagText.getText().toString());
                     loadingDialog.dismiss();
                     Toast.makeText(getContext(), "Mark creada!", Toast.LENGTH_SHORT).show();
                     activity.goToFragment(new MapFragment(), mark);

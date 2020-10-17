@@ -69,7 +69,7 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         @Override
         public void onClick(View view) {
             if (currentLocation != null) {
-                mark = new Marca(currentLocation);
+                mark = new Marca(currentLocation, activity.getUserUid());
                 activity.goToFragment(new MarkCreationFragment(), mark);
             }
         }
@@ -100,7 +100,7 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         LatLng buenosaires = new LatLng (-34.6083, -58.3712);
         addMarker(buenosaires,"el capo");
         if (mark != null && mark.getImageId() != null) { // todo como distingo marca persistida? Veo el id?
-            addMarker(mark.getLatLng(), mark.getImageId());
+            addMarker(mark.getLatLng(), mark.getText());
         }
     }
 

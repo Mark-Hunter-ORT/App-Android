@@ -21,18 +21,13 @@ public class UserFormActivity extends UserActivity {
     private TextView emailTextView;
     private String uid;
     private UserModel originalModel = null;
+    private String displayName;
+    private String photoStringUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_form);
-
-        // View data setup
-        nicknamePlainText = findViewById(R.id.nicknamePlainText);
-        emailTextView =  findViewById(R.id.emailTextView);
-        setDataOnView();
-
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // hide input keyboard when clicking outside
         findViewById(R.id.constraintLayout).setOnTouchListener(new View.OnTouchListener() {
@@ -44,6 +39,13 @@ public class UserFormActivity extends UserActivity {
             }
         });
 
+        // View data setup
+        nicknamePlainText = findViewById(R.id.nicknamePlainText);
+        emailTextView =  findViewById(R.id.emailTextView);
+        setDataOnView();
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         // Creation
         final Button saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -52,7 +54,7 @@ public class UserFormActivity extends UserActivity {
                 if (validateFields()) {
                     loadingDialog.start();
                     // build the model that will be inserted in the database
-                    final UserModel toPersist = new UserModel(uid, nicknamePlainText.getText().toString(), emailTextView.getText().toString());
+                    final UserModel toPersist = new UserModel(uid, nicknamePlainText.getText().toString(), emailTextView.getText().toString(), displayName, photoStringUri);
                     dao.persist(toPersist, new DaoCallback<UserModel>() {
                         @Override
                         public void onCallback(UserModel model) {
@@ -94,11 +96,12 @@ public class UserFormActivity extends UserActivity {
         return allFieldsValid;
     }
 
-
     private void setDataOnView() {
         final UserModel userModel = (UserModel) getIntent().getSerializableExtra(USER_MODEL);
         emailTextView.setText(userModel.getEmail());
         uid = userModel.getUid();
+        photoStringUri = userModel.getPhotoStringUri();
+        displayName = userModel.getDisplayName();
         if (userModel.getNickname() != null) { // Existing user, "Edit" was invoked
             nicknamePlainText.setText(userModel.getNickname());
             originalModel = userModel;
