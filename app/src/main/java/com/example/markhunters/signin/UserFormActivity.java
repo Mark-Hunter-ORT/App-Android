@@ -1,5 +1,6 @@
 package com.example.markhunters.signin;
 
+import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -21,6 +22,13 @@ public class UserFormActivity extends UserActivity {
     private TextView emailTextView;
     private String uid;
     private UserModel originalModel = null;
+    private String displayName;
+    private String photoStringUri;
+
+    @Override
+    protected View getMainLayoutView() {
+        return this.findViewById(R.id.constraintLayout);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +42,6 @@ public class UserFormActivity extends UserActivity {
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        // hide input keyboard when clicking outside
-        findViewById(R.id.constraintLayout).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                return true;
-            }
-        });
-
         // Creation
         final Button saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -52,12 +50,12 @@ public class UserFormActivity extends UserActivity {
                 if (validateFields()) {
                     loadingDialog.start();
                     // build the model that will be inserted in the database
-                    final UserModel toPersist = new UserModel(uid, nicknamePlainText.getText().toString(), emailTextView.getText().toString());
+                    final UserModel toPersist = new UserModel(uid, nicknamePlainText.getText().toString(), emailTextView.getText().toString(), displayName, photoStringUri);
                     dao.persist(toPersist, new DaoCallback<UserModel>() {
                         @Override
                         public void onCallback(UserModel model) {
                             if (model != null) {
-                                Toast.makeText(UserFormActivity.this, "User saved.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(UserFormActivity.this, "Usuario guardado", Toast.LENGTH_SHORT).show();
                                 startMenuActivity(model);
                                 loadingDialog.dismiss();
                             } // Todo else ERROR
@@ -66,6 +64,8 @@ public class UserFormActivity extends UserActivity {
                 }
             }
         });
+
+
 
         final Button cancelButton = findViewById(R.id.cancelButton);
         /**
@@ -85,6 +85,7 @@ public class UserFormActivity extends UserActivity {
         }
     }
 
+
     private boolean validateFields() {
         boolean allFieldsValid = true;
         if (TextUtils.isEmpty(nicknamePlainText.getText().toString())) {
@@ -94,11 +95,12 @@ public class UserFormActivity extends UserActivity {
         return allFieldsValid;
     }
 
-
     private void setDataOnView() {
         final UserModel userModel = (UserModel) getIntent().getSerializableExtra(USER_MODEL);
         emailTextView.setText(userModel.getEmail());
         uid = userModel.getUid();
+        photoStringUri = userModel.getPhotoStringUri();
+        displayName = userModel.getDisplayName();
         if (userModel.getNickname() != null) { // Existing user, "Edit" was invoked
             nicknamePlainText.setText(userModel.getNickname());
             originalModel = userModel;

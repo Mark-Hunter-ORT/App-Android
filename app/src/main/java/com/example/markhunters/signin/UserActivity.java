@@ -2,7 +2,9 @@ package com.example.markhunters.signin;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,6 +59,30 @@ public class UserActivity extends AppCompatActivity {
         dao = DaoProvider.getUserDao();
 
         loadingDialog = new LoadingDialog(this);
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        View mainLayoutView = getMainLayoutView();
+        if (mainLayoutView != null) {
+            mainLayoutView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if (getCurrentFocus() != null) {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    }
+                    return true;
+                }
+            });
+        }
+    }
+
+    protected View getMainLayoutView() {
+        return null;
     }
 
     /**

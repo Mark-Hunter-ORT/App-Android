@@ -48,16 +48,6 @@ public class SignInActivity extends UserActivity {
                 startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
-
-        // salir de la app
-        final Button exitButton = findViewById(R.id.exit_button);
-        exitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                System.exit(0);
-            }
-        });
     }
 
     @Override
@@ -84,13 +74,20 @@ public class SignInActivity extends UserActivity {
      */
     private void onLoggedIn(@NotNull final FirebaseUser firebaseUser) {
         final String uid = firebaseUser.getUid();
+        final String photoStringUri = firebaseUser.getPhotoUrl().toString();
+        final String displayName = firebaseUser.getDisplayName();
+
         DaoProvider.getUserDao().find(uid, new DaoCallback<UserModel>() {
             @Override
             public void onCallback(UserModel userModel) {
                 if (userModel == null) {
                     final UserModel model = UserModel.createNew(uid, firebaseUser.getEmail());
+                    model.setFirebaseData(firebaseUser);
                     startUserFormActivity(model); // creation
-                } else startMenuActivity(userModel); // user exists, go to main activity
+                } else {
+                    userModel.setFirebaseData(firebaseUser);
+                    startMenuActivity(userModel); // user exists, go to main activity
+                }
                 loadingDialog.dismiss();
                 finish();
             }

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:id="@+id/cameraView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:contentDescription="@string/picture"
+        app:srcCompat="@drawable/ic_take_picture_test" />
+
+
+    <EditText
+        android:id="@+id/markTagEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cameraView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="46dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/mark_tag_hint"
+        android:inputType="textPersonName"
+        android:text="" />
+
+    <Button
+        android:id="@+id/takePictureBtn"
+        android:layout_width="174dp"
+        android:layout_height="59dp"
+        android:layout_below="@+id/markTagEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:text="@string/take_a_picture" />
+
+    <Button
+        android:id="@+id/saveMarkButton"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/takePictureBtn"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="49dp"
+        android:text="@string/save" />
+
+    <Button
+        android:id="@+id/cancelMarkButton"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/takePictureBtn"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="54dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="86dp"
+        android:layout_toStartOf="@+id/saveMarkButton"
+        android:text="@string/cancel" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+</RelativeLayout>

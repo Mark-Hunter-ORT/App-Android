@@ -10,7 +10,6 @@
     <string name="cancel">Cancelar</string>
     <string name="edit">Editar</string>
     <string name="loading">Cargando</string>
-    <string name="take_picture">Foto!</string>
     <string name="picture">Foto</string>
     <string name="profile">Perfil</string>
     <string name="map">Mapa</string>
@@ -21,10 +20,11 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="placeholder_text">Placeholder text</string>
     <string name="user_form">Usuario</string>
-    <string name="take_a_picture">Foto!</string>
-    <string name="upload">Upload</string>
+    <string name="take_a_picture">Tomar foto</string>
     <string name="title_activity_maps">Mapa</string>
     <string name="mark_hunters">Mark Hunters</string>
     <string name="intro_subtitle">Cazadores de contenido</string>
     <string name="exit_button_label">Salir</string>
+    <string name="mark_button">Mark</string>
+    <string name="mark_tag_hint">Ingrese una etiqueta</string>
 </resources>
