@@ -27,7 +27,7 @@ public class MarkCreationFragment extends MarkFragment
     private ImageView mImageView;
     private EditText markTagText;
     private Button uploadButton;
-    private Bitmap mBitmap; // todo this is what has to be stored in Firebase
+    private Bitmap mBitmap = null; // todo this is what has to be stored in Firebase
     private Marca mark;
     private static final int CAMERA_REQUEST_CODE = 1001;
     private final String PAYLOAD_KEY = "Mark";
@@ -43,7 +43,6 @@ public class MarkCreationFragment extends MarkFragment
         initEnvironment();
         View rootView = inflater.inflate(R.layout.fragment_mark_creation, container, false);
         uploadButton = rootView.findViewById(R.id.saveMarkButton);
-        uploadButton.setEnabled(false); // no picture to upload yet
         mImageView = rootView.findViewById(R.id.cameraView);
         markTagText = rootView.findViewById(R.id.markTagEditText);
         if (getArguments() != null) {
@@ -70,6 +69,10 @@ public class MarkCreationFragment extends MarkFragment
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (mBitmap == null) {
+                    Toast.makeText(getContext(), "Debe tomar una foto!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 // Todo: This is just a placeholder. Here we should call a DAO and store mBitmap in Firebase.
                 LoadingDialog loadingDialog = new LoadingDialog(activity, "Subiendo");
                 loadingDialog.start();
@@ -94,7 +97,6 @@ public class MarkCreationFragment extends MarkFragment
                 final Bitmap bitmap = (Bitmap) data.getExtras().get("data");
                 mImageView.setImageBitmap(bitmap);
                 mBitmap = bitmap; // todo this is what has to be stored in Firebase
-                uploadButton.setEnabled(mImageView != null);
             }
         }
     }

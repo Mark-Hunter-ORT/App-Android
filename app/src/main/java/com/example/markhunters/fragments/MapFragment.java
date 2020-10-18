@@ -42,14 +42,15 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
     private LocationManager locationManager;
     private LocationListener locationListener;
     private Location currentLocation;
-    final int LOCATION_PERMISSION_REQUEST_CODE = 1252;
+    public static final int LOCATION_PERMISSION_REQUEST_CODE = 1252;
     private final String PAYLOAD_KEY = "Mark";
-    private Marca mark; // Todo debería usar generics acá?
+    private Marca mark; // Todo debería usar generics acá? MapFragment implements ModelFragment<Mark>
 
     public MapFragment () {
         super();
         setPayloadKey(PAYLOAD_KEY);
     }
+
 
     @Nullable
     @Override
@@ -58,6 +59,9 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         initEnvironment();
         if (getArguments() != null) {
             mark = (Marca) getArguments().getSerializable(getPayloadKey());
+        }
+        if (!permssionsAllowed()) {
+            requestPermissions(new String[]{ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         }
         View addMarkButton = root.findViewById(R.id.addMarkButton);
         addMarkButton.setOnClickListener(new MarkButtonListener());
@@ -68,11 +72,18 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
     private class MarkButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
+            if(!permssionsAllowed()) {
+                requestPermissions(new String[]{ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            }
             if (currentLocation != null) {
                 mark = new Marca(currentLocation, activity.getUserUid());
                 activity.goToFragment(new MarkCreationFragment(), mark);
             }
         }
+    }
+
+    private boolean permssionsAllowed() {
+        return ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
     private class MarkLocationListener implements LocationListener {
@@ -111,7 +122,7 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
     private void initLocationServices() {
         if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION) && shouldShowRequestPermissionRationale(ACCESS_COARSE_LOCATION)) {
-                Toast.makeText(context, "El permiso de ubicación es necesario para obtener la ubicación actual", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "El permiso de ubicación es necesario para obtener la ubicación actual", Toast.LENGTH_LONG).show();
                 requestPermissions(new String[]{ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
             }
         } else {
@@ -131,7 +142,7 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 initLocationServices();
             } else {
-                Toast.makeText(context, "Permiso denegado", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Permiso de ubicación no habilitado", Toast.LENGTH_LONG).show();
             }
         }
     }

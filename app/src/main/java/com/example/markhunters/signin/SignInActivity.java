@@ -48,16 +48,6 @@ public class SignInActivity extends UserActivity {
                 startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
-
-        // salir de la app
-        final Button exitButton = findViewById(R.id.exit_button);
-        exitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                System.exit(0);
-            }
-        });
     }
 
     @Override

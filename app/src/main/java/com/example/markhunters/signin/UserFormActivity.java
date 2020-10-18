@@ -1,5 +1,6 @@
 package com.example.markhunters.signin;
 
+import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -25,19 +26,14 @@ public class UserFormActivity extends UserActivity {
     private String photoStringUri;
 
     @Override
+    protected View getMainLayoutView() {
+        return this.findViewById(R.id.constraintLayout);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_form);
-
-        // hide input keyboard when clicking outside
-        findViewById(R.id.constraintLayout).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                return true;
-            }
-        });
 
         // View data setup
         nicknamePlainText = findViewById(R.id.nicknamePlainText);
@@ -59,7 +55,7 @@ public class UserFormActivity extends UserActivity {
                         @Override
                         public void onCallback(UserModel model) {
                             if (model != null) {
-                                Toast.makeText(UserFormActivity.this, "User saved.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(UserFormActivity.this, "Usuario guardado", Toast.LENGTH_SHORT).show();
                                 startMenuActivity(model);
                                 loadingDialog.dismiss();
                             } // Todo else ERROR
@@ -68,6 +64,8 @@ public class UserFormActivity extends UserActivity {
                 }
             }
         });
+
+
 
         final Button cancelButton = findViewById(R.id.cancelButton);
         /**
@@ -86,6 +84,7 @@ public class UserFormActivity extends UserActivity {
             cancelButton.setOnClickListener(new SignoutListener());
         }
     }
+
 
     private boolean validateFields() {
         boolean allFieldsValid = true;

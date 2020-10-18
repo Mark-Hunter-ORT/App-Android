@@ -39,16 +39,6 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        // hide input keyboard when clicking outside
-        findViewById(R.id.drawer_layout).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                return true;
-            }
-        });
-
         setDataOnView();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -75,6 +65,11 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
             navigate(R.id.menu_map);
             navigationView.setCheckedItem(R.id.menu_map);
         }
+    }
+
+    @Override
+    protected View getMainLayoutView() {
+        return findViewById(R.id.drawer_layout);
     }
 
     @Override
