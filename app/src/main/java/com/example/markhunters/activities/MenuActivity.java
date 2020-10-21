@@ -2,15 +2,12 @@ package com.example.markhunters.activities;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -19,15 +16,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.markhunters.R;
 import com.example.markhunters.fragments.MapFragment;
 import com.example.markhunters.fragments.MarkFragment;
-import com.example.markhunters.fragments.MarkCreationFragment;
 import com.example.markhunters.fragments.ProfileFragment;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.signin.UserActivity;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseUser;
 
-import java.io.Serializable;
+import org.jetbrains.annotations.NotNull;
 
 public class MenuActivity extends UserActivity implements NavigationView.OnNavigationItemSelectedListener {
     public static final String USER_MODEL = "user_model";
@@ -105,17 +99,8 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
         user = (UserModel) getIntent().getSerializableExtra(USER_MODEL);
     }
 
-    public void goToFragment(MarkFragment fragment, @Nullable Serializable payload) {
-        if (payload != null) {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(fragment.getPayloadKey(), payload);
-            fragment.setArguments(bundle);
-        }
+    public void goToFragment(@NotNull MarkFragment fragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-    }
-
-    public void goToFragment(MarkFragment fragment) {
-        goToFragment(fragment, null);
     }
 
     public String getUserUid() {

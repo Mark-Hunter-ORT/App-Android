@@ -11,7 +11,7 @@ public abstract class Dao <T extends Model> {
     public void persist (@NotNull final T model, DaoCallback<T> callback) {
         find(model.getKey(), new DaoCallback<T>() {
             @Override
-            public void onCallback(@Nullable final T persisted) {
+            public void onCallbackInstance(@Nullable final T persisted) {
                 if (persisted != null) {
                     update(model, callback);
                 } else {

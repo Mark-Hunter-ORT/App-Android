@@ -32,9 +32,9 @@ public class FirebaseUserDao extends Dao<UserModel> {
                 if (user != null && user.exists()) {
                     final String nickname = user.getString("nickname");
                     final String email = user.getString("email");
-                    callback.onCallback(new UserModel(uid, nickname, email));
+                    callback.onCallbackInstance(new UserModel(uid, nickname, email));
                 } else {
-                    callback.onCallback(null);
+                    callback.onCallbackInstance(null);
                 }
             }
         });

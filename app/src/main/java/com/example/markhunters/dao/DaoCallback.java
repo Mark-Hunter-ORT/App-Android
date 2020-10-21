@@ -4,6 +4,9 @@ import com.example.markhunters.model.Model;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public interface DaoCallback <T extends Model> {
-    void onCallback(@Nullable final T model);
+    default void onCallbackInstance(@Nullable final T model) {};
+    default void onCallbackCollection(List<T> models) {};
 }

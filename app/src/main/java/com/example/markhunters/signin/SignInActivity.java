@@ -79,7 +79,7 @@ public class SignInActivity extends UserActivity {
 
         DaoProvider.getUserDao().find(uid, new DaoCallback<UserModel>() {
             @Override
-            public void onCallback(UserModel userModel) {
+            public void onCallbackInstance(UserModel userModel) {
                 if (userModel == null) {
                     final UserModel model = UserModel.createNew(uid, firebaseUser.getEmail());
                     model.setFirebaseData(firebaseUser);

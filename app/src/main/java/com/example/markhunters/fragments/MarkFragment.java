@@ -2,17 +2,21 @@ package com.example.markhunters.fragments;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.markhunters.activities.MenuActivity;
 
-import org.jetbrains.annotations.NotNull;
-
 public class MarkFragment extends Fragment {
-    protected String payloadKey;
     protected Context context;
     protected MenuActivity activity;
 
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        initEnvironment();
+    }
 
     protected void initEnvironment() {
         context = getContext();
@@ -22,12 +26,8 @@ public class MarkFragment extends Fragment {
         }
     }
 
-    protected void setPayloadKey(@NotNull final String payloadKey) {
-        this.payloadKey = payloadKey;
-    }
-
-    public String getPayloadKey() {
-        return payloadKey;
+    protected void goToFragment(MarkFragment fragment) {
+        activity.goToFragment(fragment);
     }
 
 }

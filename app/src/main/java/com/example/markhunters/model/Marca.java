@@ -22,6 +22,11 @@ public class Marca extends Model {
         this.userId = userUid;
     }
 
+    public Marca (com.example.markhunters.model.Location location, String userUid) {
+        this.location = location;
+        this.userId = userUid;
+    }
+
     @Override
     public JSONObject toJson() {
         return new JSONObject();
@@ -71,5 +76,9 @@ public class Marca extends Model {
     @Override
     public String getKey() {
         return null;
+    }
+
+    public com.example.markhunters.model.Location getLocation() {
+        return location;
     }
 }

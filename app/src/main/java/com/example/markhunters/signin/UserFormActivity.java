@@ -53,7 +53,7 @@ public class UserFormActivity extends UserActivity {
                     final UserModel toPersist = new UserModel(uid, nicknamePlainText.getText().toString(), emailTextView.getText().toString(), displayName, photoStringUri);
                     dao.persist(toPersist, new DaoCallback<UserModel>() {
                         @Override
-                        public void onCallback(UserModel model) {
+                        public void onCallbackInstance(UserModel model) {
                             if (model != null) {
                                 Toast.makeText(UserFormActivity.this, "Usuario guardado", Toast.LENGTH_SHORT).show();
                                 startMenuActivity(model);

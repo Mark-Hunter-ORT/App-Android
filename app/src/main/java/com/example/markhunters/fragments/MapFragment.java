@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,12 +44,14 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
     private LocationListener locationListener;
     private Location currentLocation;
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1252;
-    private final String PAYLOAD_KEY = "Mark";
     private Marca mark; // Todo debería usar generics acá? MapFragment implements ModelFragment<Mark>
 
     public MapFragment () {
         super();
-        setPayloadKey(PAYLOAD_KEY);
+    }
+
+    public MapFragment(Marca mark) {
+        this.mark = mark;
     }
 
 
@@ -56,33 +59,39 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_map, container, false);
-        initEnvironment();
-        if (getArguments() != null) {
-            mark = (Marca) getArguments().getSerializable(getPayloadKey());
-        }
-        if (!permssionsAllowed()) {
+        if (!permissionsAllowed()) {
             requestPermissions(new String[]{ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         }
-        View addMarkButton = root.findViewById(R.id.addMarkButton);
+        Button addMarkButton = root.findViewById(R.id.addMarkButton);
         addMarkButton.setOnClickListener(new MarkButtonListener());
+
+        Button viewMarkTestButton = root.findViewById(R.id.viewMarkTestButton);
+        viewMarkTestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToFragment(new MarkViewFragment(1));
+            }
+        });
         return root;
     }
+
+
 
 
     private class MarkButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            if(!permssionsAllowed()) {
+            if(!permissionsAllowed()) {
                 requestPermissions(new String[]{ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
             }
             if (currentLocation != null) {
                 mark = new Marca(currentLocation, activity.getUserUid());
-                activity.goToFragment(new MarkCreationFragment(), mark);
+                goToFragment(new MarkCreationFragment(mark.getLocation()));
             }
         }
     }
 
-    private boolean permssionsAllowed() {
+    private boolean permissionsAllowed() {
         return ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 

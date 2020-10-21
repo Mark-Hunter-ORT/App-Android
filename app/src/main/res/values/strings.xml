@@ -27,4 +27,7 @@
     <string name="exit_button_label">Salir</string>
     <string name="mark_button">Mark</string>
     <string name="mark_tag_hint">Ingrese una etiqueta</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ver_mark_1">Ver Mark 1</string>
 </resources>
