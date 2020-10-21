@@ -1,5 +1,7 @@
 package com.example.markhunters.model;
 
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.Map;
 
@@ -10,4 +12,5 @@ public abstract class Model implements Serializable {
      */
     public abstract Map<String, Object> toDto();
     public abstract String getKey();
+    public abstract JSONObject toJson();
 }

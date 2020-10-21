@@ -4,6 +4,8 @@ import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONObject;
+
 import java.util.Map;
 
 public class Marca extends Model {
@@ -18,6 +20,11 @@ public class Marca extends Model {
     public Marca (Location location, String userUid) {
         this.location = new com.example.markhunters.model.Location(location.getLatitude(), location.getLongitude());
         this.userId = userUid;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        return new JSONObject();
     }
 
     public double getLat() {

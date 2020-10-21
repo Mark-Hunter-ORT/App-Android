@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,11 @@ public class UserModel extends Model {
     public void setFirebaseData(FirebaseUser firebaseUser) {
         this.photoStringUri = firebaseUser.getPhotoUrl().getPath();
         this.displayName = firebaseUser.getDisplayName();
+    }
+
+    @Override
+    public JSONObject toJson() {
+        return new JSONObject();
     }
 
     private UserModel(@NotNull final String uid, @NotNull final String email) {
