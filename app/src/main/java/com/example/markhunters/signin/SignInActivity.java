@@ -6,14 +6,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.markhunters.R;
-import com.example.markhunters.dao.DaoCallback;
-import com.example.markhunters.dao.DaoProvider;
+import com.example.markhunters.activities.MenuActivity;
+import com.example.markhunters.service.dao.DaoCallback;
+import com.example.markhunters.service.ServiceProvider;
 import com.example.markhunters.model.UserModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import org.jetbrains.annotations.NotNull;
@@ -71,15 +72,14 @@ public class SignInActivity extends UserActivity {
     /**
      * Last step. FirebaseUser is already authenticated. Navigate to MainActivity with user from database or go to UserCreationActivity to register a new one
      * @param firebaseUser firebaseUser
+     * @param idToken
      */
-    private void onLoggedIn(@NotNull final FirebaseUser firebaseUser) {
+    private void onLoggedIn(@NotNull final FirebaseUser firebaseUser, String idToken) {
         final String uid = firebaseUser.getUid();
-        final String photoStringUri = firebaseUser.getPhotoUrl().toString();
-        final String displayName = firebaseUser.getDisplayName();
-
-        DaoProvider.getUserDao().find(uid, new DaoCallback<UserModel>() {
+        ServiceProvider.getUserDao().find(uid, new DaoCallback<UserModel>() {
             @Override
             public void onCallbackInstance(UserModel userModel) {
+                MenuActivity.setToken(idToken);
                 if (userModel == null) {
                     final UserModel model = UserModel.createNew(uid, firebaseUser.getEmail());
                     model.setFirebaseData(firebaseUser);
@@ -90,6 +90,16 @@ public class SignInActivity extends UserActivity {
                 }
                 loadingDialog.dismiss();
                 finish();
+            }
+        });
+    }
+
+    private void onLoggedIn(@NotNull final FirebaseUser firebaseUser) {
+        firebaseUser.getIdToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+            @Override
+            public void onComplete(@NonNull Task<GetTokenResult> task) {
+                GetTokenResult result = task.getResult();
+                onLoggedIn(firebaseUser, result.getToken());
             }
         });
     }
@@ -119,7 +129,7 @@ public class SignInActivity extends UserActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             final FirebaseUser user = fAuth.getCurrentUser();
-                            onLoggedIn(user);
+                            onLoggedIn(user, idToken);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());

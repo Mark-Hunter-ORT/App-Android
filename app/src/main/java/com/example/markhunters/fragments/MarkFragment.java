@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.markhunters.activities.MenuActivity;
+import com.example.markhunters.service.rest.RestClient;
 
 public class MarkFragment extends Fragment {
     protected Context context;
@@ -24,6 +25,10 @@ public class MarkFragment extends Fragment {
         if (context == null || activity == null) {
             throw new RuntimeException("Contexto o activity nulos");
         }
+    }
+
+    protected RestClient getClient() {
+        return activity.getClient();
     }
 
     protected void goToFragment(MarkFragment fragment) {

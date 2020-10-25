@@ -1,18 +1,15 @@
 package com.example.markhunters.signin;
 
-import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.markhunters.R;
-import com.example.markhunters.dao.DaoCallback;
+import com.example.markhunters.service.dao.DaoCallback;
 import com.example.markhunters.model.UserModel;
 
 public class UserFormActivity extends UserActivity {

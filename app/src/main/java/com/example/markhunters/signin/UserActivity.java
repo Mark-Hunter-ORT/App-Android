@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.markhunters.R;
 import com.example.markhunters.activities.MenuActivity;
-import com.example.markhunters.dao.Dao;
-import com.example.markhunters.dao.DaoProvider;
+import com.example.markhunters.service.dao.Dao;
+import com.example.markhunters.service.ServiceProvider;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.ui.LoadingDialog;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -56,7 +56,7 @@ public class UserActivity extends AppCompatActivity {
         gsc = GoogleSignIn.getClient(this, gso);
 
         // Dao setup
-        dao = DaoProvider.getUserDao();
+        dao = ServiceProvider.getUserDao();
 
         loadingDialog = new LoadingDialog(this);
 

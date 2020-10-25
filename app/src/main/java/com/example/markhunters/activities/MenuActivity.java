@@ -1,6 +1,7 @@
 package com.example.markhunters.activities;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -18,6 +19,8 @@ import com.example.markhunters.fragments.MapFragment;
 import com.example.markhunters.fragments.MarkFragment;
 import com.example.markhunters.fragments.ProfileFragment;
 import com.example.markhunters.model.UserModel;
+import com.example.markhunters.service.ServiceProvider;
+import com.example.markhunters.service.rest.RestClient;
 import com.example.markhunters.signin.UserActivity;
 import com.google.android.material.navigation.NavigationView;
 
@@ -27,11 +30,24 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
     public static final String USER_MODEL = "user_model";
     private DrawerLayout drawer;
     private UserModel user;
+    private static String token = null;
+    private RestClient restClient;
+
+    public static void setToken(String token) {
+        MenuActivity.token = token;
+    }
+
+    public RestClient getClient() {
+        return this.restClient;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        validateToken();
+        restClient = ServiceProvider.getRestClient(token);
 
         setDataOnView();
 
@@ -58,6 +74,12 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
         if (savedInstanceState == null) {
             navigate(R.id.menu_map);
             navigationView.setCheckedItem(R.id.menu_map);
+        }
+    }
+
+    private void validateToken() {
+        if (token == null || TextUtils.isEmpty(token)) {
+            throw new RuntimeException("Token inválido");
         }
     }
 

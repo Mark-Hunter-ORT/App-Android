@@ -32,7 +32,6 @@ public class MarkCreationFragment extends MarkFragment
     private Marca mark;
     private Location location;
     private static final int CAMERA_REQUEST_CODE = 1001;
-    private final String PAYLOAD_KEY = "Mark";
 
     public MarkCreationFragment(Location location) {
         this.location = location;

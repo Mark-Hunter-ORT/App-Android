@@ -1,4 +1,4 @@
-package com.example.markhunters.dao;
+package com.example.markhunters.service.dao;
 
 import androidx.annotation.NonNull;
 
