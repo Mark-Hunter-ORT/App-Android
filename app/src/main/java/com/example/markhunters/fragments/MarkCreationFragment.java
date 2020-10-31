@@ -17,8 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.markhunters.R;
-import com.example.markhunters.model.Location;
-import com.example.markhunters.model.Marca;
+import com.example.markhunters.model.MarkLocation;
+import com.example.markhunters.model.Mark;
 import com.example.markhunters.ui.LoadingDialog;
 
 import static android.app.Activity.RESULT_OK;
@@ -29,12 +29,12 @@ public class MarkCreationFragment extends MarkFragment
     private EditText markTagText;
     private Button uploadButton;
     private Bitmap mBitmap = null; // todo this is what has to be stored in Firebase
-    private Marca mark;
-    private Location location;
+    private Mark mark;
+    private MarkLocation markLocation;
     private static final int CAMERA_REQUEST_CODE = 1001;
 
-    public MarkCreationFragment(Location location) {
-        this.location = location;
+    public MarkCreationFragment(MarkLocation markLocation) {
+        this.markLocation = markLocation;
     }
 
     @Nullable
@@ -73,7 +73,7 @@ public class MarkCreationFragment extends MarkFragment
                 LoadingDialog loadingDialog = new LoadingDialog(activity, "Subiendo");
                 loadingDialog.start();
                 (new Handler()).postDelayed(() -> {
-                    mark = new Marca(location, activity.getUserUid());
+                    mark = new Mark(markLocation, activity.getUserUid());
                     mark.setImageId(mBitmap.toString()); // Todo llamamos a la persistencia acá? Cuando le ponemos el userId?
                     mark.setText(markTagText.getText().toString());
                     loadingDialog.dismiss();

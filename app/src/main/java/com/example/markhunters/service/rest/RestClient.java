@@ -3,8 +3,8 @@ package com.example.markhunters.service.rest;
 import org.jetbrains.annotations.NotNull;
 import android.util.Log;
 
-import com.example.markhunters.model.Location;
-import com.example.markhunters.model.Marca;
+import com.example.markhunters.model.MarkLocation;
+import com.example.markhunters.model.Mark;
 
 import org.json.JSONObject;
 
@@ -113,8 +113,8 @@ public abstract class RestClient {
         });
     }
 
-    public void postLocation(Location location) throws IOException {
-        JSONObject json = location.toJson();
+    public void postLocation(MarkLocation markLocation) throws IOException {
+        JSONObject json = markLocation.toJson();
         RequestBody reqBody = RequestBody.create(MEDIA, json.toString());
         String url = this.SERVER_FQDN + this.LOCATIONS;
         final Request request = new Request.Builder()
@@ -179,7 +179,7 @@ public abstract class RestClient {
         });
     }
 
-    public void postMark(Marca mark) throws IOException {
+    public void postMark(Mark mark) throws IOException {
         JSONObject json = mark.toJson();
         RequestBody reqBody = RequestBody.create(MEDIA, json.toString());
         String url = this.SERVER_FQDN + this.MARKS;

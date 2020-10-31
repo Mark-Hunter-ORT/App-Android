@@ -21,7 +21,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.markhunters.R;
-import com.example.markhunters.model.Marca;
+import com.example.markhunters.model.Mark;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -44,13 +44,13 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
     private LocationListener locationListener;
     private Location currentLocation;
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1252;
-    private Marca mark; // Todo debería usar generics acá? MapFragment implements ModelFragment<Mark>
+    private Mark mark; // Todo debería usar generics acá? MapFragment implements ModelFragment<Mark>
 
     public MapFragment () {
         super();
     }
 
-    public MapFragment(Marca mark) {
+    public MapFragment(Mark mark) {
         this.mark = mark;
     }
 
@@ -85,8 +85,8 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
                 requestPermissions(new String[]{ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
             }
             if (currentLocation != null) {
-                mark = new Marca(currentLocation, activity.getUserUid());
-                goToFragment(new MarkCreationFragment(mark.getLocation()));
+                mark = new Mark(currentLocation, activity.getUserUid());
+                goToFragment(new MarkCreationFragment(mark.getMarkLocation()));
             }
         }
     }
