@@ -38,8 +38,8 @@
             android:name=".activities.MenuActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".signin.UserFormActivity" />
-        <activity android:name=".signin.SignInActivity">
+        <activity android:name=".activities.signin.UserFormActivity" />
+        <activity android:name=".activities.signin.SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

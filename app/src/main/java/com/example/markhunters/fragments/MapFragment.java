@@ -21,7 +21,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.markhunters.R;
+import com.example.markhunters.model.GPSLocation;
 import com.example.markhunters.model.Mark;
+import com.example.markhunters.model.MarkLocation;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -32,6 +34,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -44,14 +48,14 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
     private LocationListener locationListener;
     private Location currentLocation;
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1252;
-    private Mark mark; // Todo debería usar generics acá? MapFragment implements ModelFragment<Mark>
+    private List<Mark> marks;
 
     public MapFragment () {
         super();
     }
 
-    public MapFragment(Mark mark) {
-        this.mark = mark;
+    public void initMarks() {
+        getClient().getMarks(marks -> MapFragment.this.marks = marks);
     }
 
 
@@ -85,8 +89,9 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
                 requestPermissions(new String[]{ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
             }
             if (currentLocation != null) {
-                mark = new Mark(currentLocation, activity.getUserUid());
-                goToFragment(new MarkCreationFragment(mark.getMarkLocation()));
+                GPSLocation gpsLocation = new GPSLocation(currentLocation);
+                MarkLocation markLocation = new MarkLocation(gpsLocation);
+                goToFragment(new MarkCreationFragment(markLocation));
             }
         }
     }
@@ -119,9 +124,6 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         initLocationServices();
         LatLng buenosaires = new LatLng (-34.6083, -58.3712);
         addMarker(buenosaires,"el capo");
-        if (mark != null && mark.getImageId() != null) { // todo como distingo marca persistida? Veo el id?
-            addMarker(mark.getLatLng(), mark.getText());
-        }
     }
 
     private void addMarker(LatLng latLng, String title) {

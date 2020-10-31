@@ -73,12 +73,9 @@ public class MarkCreationFragment extends MarkFragment
                 LoadingDialog loadingDialog = new LoadingDialog(activity, "Subiendo");
                 loadingDialog.start();
                 (new Handler()).postDelayed(() -> {
-                    mark = new Mark(markLocation, activity.getUserUid());
-                    mark.setImageId(mBitmap.toString()); // Todo llamamos a la persistencia acá? Cuando le ponemos el userId?
-                    mark.setText(markTagText.getText().toString());
                     loadingDialog.dismiss();
                     Toast.makeText(getContext(), "Mark creada!", Toast.LENGTH_SHORT).show();
-                    goToFragment(new MapFragment(mark));
+                    goToFragment(new MapFragment());
                 }, 5000); // dismiss the dialog after 5 seconds. Show success message toast.
             }
         });

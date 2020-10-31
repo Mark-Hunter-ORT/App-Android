@@ -5,8 +5,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public class Mark {
+public class Mark extends Model {
     public Integer id;
     public String userId;
     public String category;
@@ -26,6 +28,17 @@ public class Mark {
         this.location = location;
         this.content = content;
         this.id = id;
+    }
+
+    // todo estos dos hay que dejarlos hasta que matemos a FirebaseUserDao
+    @Override
+    public Map<String, Object> toDto() {
+        return null;
+    }
+
+    @Override
+    public String getKey() {
+        return null;
     }
 
     public JSONObject toJson(){
@@ -83,4 +96,20 @@ public class Mark {
         }
         return mark;
     }
+
+    public static List<Mark> fromJSONArray(JSONArray jsonArray) {
+        final List<Mark> marks = new ArrayList<>();
+
+        for (int i = 0; i < jsonArray.length(); i ++) {
+            try {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                marks.add(fromJson(jsonObject));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return marks;
+    }
+
 }

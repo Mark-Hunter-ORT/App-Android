@@ -5,10 +5,14 @@ import android.util.Log;
 
 import com.example.markhunters.model.MarkLocation;
 import com.example.markhunters.model.Mark;
+import com.example.markhunters.service.rest.RestClientCallbacks.CallbackCollection;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -19,7 +23,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 
-public abstract class RestClient {
+public class RestClient {
     private final String SERVER_FQDN = "http://18.229.104.197:5000/";
     private final String CATEGORIES = "api/category/";
     private final String CATEGORY = "api/category/<id>/";
@@ -36,7 +40,7 @@ public abstract class RestClient {
     private OkHttpClient httpclient;
     private Response response;
 
-    protected RestClient (@NotNull String token) {
+    public RestClient (@NotNull String token) {
         this.token = token;
         this.httpclient = new OkHttpClient();
     }
@@ -50,7 +54,7 @@ public abstract class RestClient {
         Log.e("test", response.body().string());
     }
 
-    public void getCaterogy(String id) throws IOException {
+    public void getCaterogy(String id) {
         String url = this.SERVER_FQDN + this.CATEGORY.replace("<id>", id);
         final Request request = new Request.Builder()
                 .url(url)
@@ -71,7 +75,7 @@ public abstract class RestClient {
         });
     }
 
-    public void getCategories() throws IOException {
+    public void getCategories() {
         String url = this.SERVER_FQDN + this.CATEGORIES;
         final Request request = new Request.Builder()
                 .url(url)
@@ -92,7 +96,7 @@ public abstract class RestClient {
         });
     }
 
-    public void getLocations() throws IOException {
+    public void getLocations() {
         String url = this.SERVER_FQDN + this.LOCATIONS;
         final Request request = new Request.Builder()
                 .url(url)
@@ -113,7 +117,7 @@ public abstract class RestClient {
         });
     }
 
-    public void postLocation(MarkLocation markLocation) throws IOException {
+    public void postLocation(MarkLocation markLocation) {
         JSONObject json = markLocation.toJson();
         RequestBody reqBody = RequestBody.create(MEDIA, json.toString());
         String url = this.SERVER_FQDN + this.LOCATIONS;
@@ -137,7 +141,7 @@ public abstract class RestClient {
         });
     }
 
-    public void getLocation(String id) throws IOException {
+    public void getLocation(String id) {
         String url = this.SERVER_FQDN + this.LOCATION.replace("<id>", id);
         final Request request = new Request.Builder()
                 .url(url)
@@ -158,7 +162,7 @@ public abstract class RestClient {
         });
     }
 
-    public void getMarks() throws IOException {
+    public void getMarks(CallbackCollection<Mark> callback) {
         String url = this.SERVER_FQDN + this.MARKS;
         final Request request = new Request.Builder()
                 .url(url)
@@ -173,13 +177,19 @@ public abstract class RestClient {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()) {
-                    doSomething(response);
+                    try {
+                        JSONArray jsonArray = new JSONArray(response.body().string());
+                        List<Mark> marks = Mark.fromJSONArray(jsonArray);
+                        callback.onCallback(marks);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
     }
 
-    public void postMark(Mark mark) throws IOException {
+    public void postMark(Mark mark) {
         JSONObject json = mark.toJson();
         RequestBody reqBody = RequestBody.create(MEDIA, json.toString());
         String url = this.SERVER_FQDN + this.MARKS;
@@ -203,7 +213,7 @@ public abstract class RestClient {
         });
     }
 
-    public void getMark(String id) throws IOException {
+    public void getMark(String id) {
         String url = this.SERVER_FQDN + this.MARK.replace("<id>", id);
         final Request request = new Request.Builder()
                 .url(url)
@@ -224,7 +234,7 @@ public abstract class RestClient {
         });
     }
 
-    public void getUser(String id) throws IOException {
+    public void getUser(String id) {
         String url = this.SERVER_FQDN + this.USER.replace("<id>", id);
         final Request request = new Request.Builder()
                 .url(url)
@@ -245,7 +255,7 @@ public abstract class RestClient {
         });
     }
 
-    public void followUser(String id) throws IOException {
+    public void followUser(String id) {
         RequestBody reqbody = RequestBody.create(null, new byte[0]);
         String url = this.SERVER_FQDN + this.USER.replace("<id>", id);
         final Request request = new Request.Builder()
@@ -268,7 +278,7 @@ public abstract class RestClient {
         });
     }
 
-    public void unfollowUser(String id) throws IOException {
+    public void unfollowUser(String id) {
         String url = this.SERVER_FQDN + this.USER.replace("<id>", id);
         final Request request = new Request.Builder()
                 .url(url)
