@@ -3,12 +3,11 @@ package com.example.markhunters.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.markhunters.R;
-import com.example.markhunters.signin.SignInActivity;
+import com.example.markhunters.activities.signin.SignInActivity;
 
 public class IntroActivity extends AppCompatActivity {
 

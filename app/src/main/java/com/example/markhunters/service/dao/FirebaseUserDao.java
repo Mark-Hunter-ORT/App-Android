@@ -1,10 +1,7 @@
 package com.example.markhunters.service.dao;
 
-import androidx.annotation.NonNull;
-
 import com.example.markhunters.model.UserModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.markhunters.service.rest.RestClientCallbacks.CallbackInstance;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -23,45 +20,32 @@ public class FirebaseUserDao extends Dao<UserModel> {
     }
 
     @Override
-    public void find(@NotNull final String uid, DaoCallback<UserModel> callback) {
+    public void find(@NotNull final String uid, CallbackInstance<UserModel> callback) {
         final DocumentReference userReference = dbCollection.document(uid);
-        userReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                DocumentSnapshot user = task.getResult();
-                if (user != null && user.exists()) {
-                    final String nickname = user.getString("nickname");
-                    final String email = user.getString("email");
-                    callback.onCallbackInstance(new UserModel(uid, nickname, email));
-                } else {
-                    callback.onCallbackInstance(null);
-                }
+        userReference.get().addOnCompleteListener(task -> {
+            DocumentSnapshot user = task.getResult();
+            if (user != null && user.exists()) {
+                final String nickname = user.getString("nickname");
+                final String email = user.getString("email");
+                callback.onCallback(new UserModel(uid, nickname, email));
+            } else {
+                callback.onCallback(null);
             }
         });
     }
 
     @Override
-    protected void update(@NotNull final UserModel model, DaoCallback<UserModel> callback) {
+    protected void update(@NotNull final UserModel model, CallbackInstance<UserModel> callback) {
         final String key = model.getKey();
         final DocumentReference userReference = fStore.collection("users").document(key);
-        userReference.update("nickname", model.getNickname()).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                find(key, callback);
-            }
-        });
+        userReference.update("nickname", model.getNickname()).addOnCompleteListener(task -> find(key, callback));
     }
 
     @Override
-    protected void create(@NotNull final UserModel model, DaoCallback<UserModel> callback) {
+    protected void create(@NotNull final UserModel model, CallbackInstance<UserModel> callback) {
         final String key = model.getKey();
         final DocumentReference userReference = fStore.collection("users").document(key);
-        userReference.set(model.toDto()).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                find(key, callback);
-            }
-        });
+        userReference.set(model.toDto()).addOnCompleteListener(task -> find(key, callback));
     }
 
 }

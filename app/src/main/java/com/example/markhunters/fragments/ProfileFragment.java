@@ -13,11 +13,11 @@ import androidx.fragment.app.Fragment;
 
 import com.example.markhunters.R;
 import com.example.markhunters.model.UserModel;
-import com.example.markhunters.signin.UserActivity;
+import com.example.markhunters.activities.signin.UserActivity;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ProfileFragment extends Fragment
+public class ProfileFragment extends MarkFragment
 {
     private UserModel user;
     private TextView nicknameTextView;
@@ -36,12 +36,8 @@ public class ProfileFragment extends Fragment
         }
 
         Button editButton = rootView.findViewById(R.id.editButton);
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UserActivity activity = (UserActivity) getActivity();
-                activity.startUserFormActivity(user);
-            }
+        editButton.setOnClickListener(view -> {
+            activity.startUserFormActivity(user);
         });
 
         return rootView;

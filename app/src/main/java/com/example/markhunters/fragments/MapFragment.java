@@ -21,7 +21,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.markhunters.R;
-import com.example.markhunters.model.Marca;
+import com.example.markhunters.model.GPSLocation;
+import com.example.markhunters.model.Mark;
+import com.example.markhunters.model.MarkLocation;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -32,6 +34,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -44,14 +48,18 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
     private LocationListener locationListener;
     private Location currentLocation;
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1252;
-    private Marca mark; // Todo debería usar generics acá? MapFragment implements ModelFragment<Mark>
+    private List<Mark> marks;
 
     public MapFragment () {
         super();
     }
 
-    public MapFragment(Marca mark) {
-        this.mark = mark;
+    public void refreshMarks() {
+        if (map == null) return;
+        getClient().getMarks(_marks -> {
+            marks = _marks;
+            activity.runOnUiThread(() -> marks.forEach(m -> addMarker(m.getLatLng(), m.userId)));
+        });
     }
 
 
@@ -65,13 +73,8 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         Button addMarkButton = root.findViewById(R.id.addMarkButton);
         addMarkButton.setOnClickListener(new MarkButtonListener());
 
-        Button viewMarkTestButton = root.findViewById(R.id.viewMarkTestButton);
-        viewMarkTestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToFragment(new MarkViewFragment(1));
-            }
-        });
+        Button refreshButton = root.findViewById(R.id.refreshMarksButton);
+        refreshButton.setOnClickListener(view -> refreshMarks());
         return root;
     }
 
@@ -85,8 +88,9 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
                 requestPermissions(new String[]{ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
             }
             if (currentLocation != null) {
-                mark = new Marca(currentLocation, activity.getUserUid());
-                goToFragment(new MarkCreationFragment(mark.getLocation()));
+                GPSLocation gpsLocation = new GPSLocation(currentLocation);
+                MarkLocation markLocation = new MarkLocation(gpsLocation);
+                goToFragment(new MarkCreationFragment(markLocation));
             }
         }
     }
@@ -117,15 +121,16 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         MapsInitializer.initialize(context);
         map = googleMap;
         initLocationServices();
-        LatLng buenosaires = new LatLng (-34.6083, -58.3712);
-        addMarker(buenosaires,"el capo");
-        if (mark != null && mark.getImageId() != null) { // todo como distingo marca persistida? Veo el id?
-            addMarker(mark.getLatLng(), mark.getText());
-        }
+        refreshMarks();
     }
 
     private void addMarker(LatLng latLng, String title) {
-        map.addMarker(new MarkerOptions().position(latLng).title(title).icon(bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark)));
+        try {
+            map.addMarker(new MarkerOptions().position(latLng).title(title).icon(bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark)));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initLocationServices() {

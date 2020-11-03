@@ -69,7 +69,6 @@ public class UserModel extends Model {
         return uid;
     }
 
-    @Override
     public Map<String, Object> toDto() {
         final Map<String, Object> dto = new HashMap<>();
         dto.put("nickname", this.nickname);
@@ -77,7 +76,6 @@ public class UserModel extends Model {
         return dto;
     }
 
-    @Override
     public String getKey() {
         return getUid();
     }

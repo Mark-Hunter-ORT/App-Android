@@ -21,7 +21,7 @@ import com.example.markhunters.fragments.ProfileFragment;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.ServiceProvider;
 import com.example.markhunters.service.rest.RestClient;
-import com.example.markhunters.signin.UserActivity;
+import com.example.markhunters.activities.signin.UserActivity;
 import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;

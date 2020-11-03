@@ -6,11 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.markhunters.R;
-import com.example.markhunters.model.Marca;
+import com.example.markhunters.model.Mark;
 
 public class MarkViewFragment extends MarkFragment {
 
-    private Marca mark;
+    private Mark mark;
 
     public MarkViewFragment(int markId) {
         /* todo acá habría que resolver el fetch de la mark al restClient y asignarle el resultado a 'mark'

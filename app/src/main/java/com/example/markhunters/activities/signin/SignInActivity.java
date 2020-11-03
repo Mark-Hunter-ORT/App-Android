@@ -1,4 +1,4 @@
-package com.example.markhunters.signin;
+package com.example.markhunters.activities.signin;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,9 +12,8 @@ import androidx.annotation.Nullable;
 
 import com.example.markhunters.R;
 import com.example.markhunters.activities.MenuActivity;
-import com.example.markhunters.service.dao.DaoCallback;
-import com.example.markhunters.service.ServiceProvider;
 import com.example.markhunters.model.UserModel;
+import com.example.markhunters.service.ServiceProvider;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.SignInButton;
@@ -76,21 +75,18 @@ public class SignInActivity extends UserActivity {
      */
     private void onLoggedIn(@NotNull final FirebaseUser firebaseUser, String idToken) {
         final String uid = firebaseUser.getUid();
-        ServiceProvider.getUserDao().find(uid, new DaoCallback<UserModel>() {
-            @Override
-            public void onCallbackInstance(UserModel userModel) {
-                MenuActivity.setToken(idToken);
-                if (userModel == null) {
-                    final UserModel model = UserModel.createNew(uid, firebaseUser.getEmail());
-                    model.setFirebaseData(firebaseUser);
-                    startUserFormActivity(model); // creation
-                } else {
-                    userModel.setFirebaseData(firebaseUser);
-                    startMenuActivity(userModel); // user exists, go to main activity
-                }
-                loadingDialog.dismiss();
-                finish();
+        ServiceProvider.getUserDao().find(uid, userModel -> {
+            MenuActivity.setToken(idToken);
+            if (userModel == null) {
+                final UserModel model = UserModel.createNew(uid, firebaseUser.getEmail());
+                model.setFirebaseData(firebaseUser);
+                startUserFormActivity(model); // creation
+            } else {
+                userModel.setFirebaseData(firebaseUser);
+                startMenuActivity(userModel); // user exists, go to main activity
             }
+            loadingDialog.dismiss();
+            finish();
         });
     }
 
