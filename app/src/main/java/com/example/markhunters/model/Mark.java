@@ -31,12 +31,10 @@ public class Mark extends Model {
     }
 
     // todo estos dos hay que dejarlos hasta que matemos a FirebaseUserDao
-    @Override
     public Map<String, Object> toDto() {
         return null;
     }
 
-    @Override
     public String getKey() {
         return null;
     }
@@ -97,7 +95,7 @@ public class Mark extends Model {
         return mark;
     }
 
-    public static List<Mark> fromJSONArray(JSONArray jsonArray) {
+    public static List<Mark> fromJsonArray(JSONArray jsonArray) {
         final List<Mark> marks = new ArrayList<>();
 
         for (int i = 0; i < jsonArray.length(); i ++) {

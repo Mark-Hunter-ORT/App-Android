@@ -1,9 +1,13 @@
 package com.example.markhunters.model;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MarkLocation {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MarkLocation extends Model {
     public GPSLocation gps;
     public MagneticLocation magnetic;
     private Boolean hasMagnetic;
@@ -78,5 +82,20 @@ public class MarkLocation {
             e.printStackTrace();
         }
         return loc;
+    }
+
+    public static List<MarkLocation> fromJsonArray(JSONArray jsonArray) {
+        final List<MarkLocation> locations = new ArrayList<>();
+
+        for (int i = 0; i < jsonArray.length(); i ++) {
+            try {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                locations.add(fromJson(jsonObject));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return locations;
     }
 }

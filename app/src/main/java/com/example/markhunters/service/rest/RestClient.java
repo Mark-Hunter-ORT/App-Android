@@ -3,9 +3,11 @@ package com.example.markhunters.service.rest;
 import org.jetbrains.annotations.NotNull;
 import android.util.Log;
 
+import com.example.markhunters.model.Category;
 import com.example.markhunters.model.MarkLocation;
 import com.example.markhunters.model.Mark;
 import com.example.markhunters.service.rest.RestClientCallbacks.CallbackCollection;
+import com.example.markhunters.service.rest.RestClientCallbacks.CallbackInstance;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,7 +56,7 @@ public class RestClient {
         Log.e("test", response.body().string());
     }
 
-    public void getCaterogy(String id) {
+    public void getCaterogy(String id, CallbackInstance<Category> callback) {
         String url = this.SERVER_FQDN + this.CATEGORY.replace("<id>", id);
         final Request request = new Request.Builder()
                 .url(url)
@@ -69,13 +71,13 @@ public class RestClient {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()) {
-                    doSomething(response);
+                    callback.onCallback(new Category(response.body().string()));
                 }
             }
         });
     }
 
-    public void getCategories() {
+    public void getCategories(CallbackCollection<Category> callback) {
         String url = this.SERVER_FQDN + this.CATEGORIES;
         final Request request = new Request.Builder()
                 .url(url)
@@ -90,13 +92,18 @@ public class RestClient {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()) {
-                    doSomething(response);
+                    try {
+                        JSONArray categoryJson = new JSONArray(response.body().string());
+                        callback.onCallback(Category.fromJsonArray(categoryJson));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
     }
 
-    public void getLocations() {
+    public void getLocations(CallbackCollection<MarkLocation> callback) {
         String url = this.SERVER_FQDN + this.LOCATIONS;
         final Request request = new Request.Builder()
                 .url(url)
@@ -111,13 +118,18 @@ public class RestClient {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()) {
-                    doSomething(response);
+                    try {
+                        JSONArray locationJson = new JSONArray(response.body().string());
+                        callback.onCallback(MarkLocation.fromJsonArray(locationJson));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
     }
 
-    public void postLocation(MarkLocation markLocation) {
+    public void postLocation(MarkLocation markLocation, CallbackInstance<MarkLocation> callback) {
         JSONObject json = markLocation.toJson();
         RequestBody reqBody = RequestBody.create(MEDIA, json.toString());
         String url = this.SERVER_FQDN + this.LOCATIONS;
@@ -135,13 +147,18 @@ public class RestClient {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()) {
-                    doSomething(response);
+                    try {
+                        JSONObject locationJson = new JSONObject(response.body().string());
+                        callback.onCallback(MarkLocation.fromJson(locationJson));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
     }
 
-    public void getLocation(String id) {
+    public void getLocation(String id, CallbackInstance<MarkLocation> callback) {
         String url = this.SERVER_FQDN + this.LOCATION.replace("<id>", id);
         final Request request = new Request.Builder()
                 .url(url)
@@ -156,7 +173,12 @@ public class RestClient {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()) {
-                    doSomething(response);
+                    try {
+                        JSONObject locationJson = new JSONObject(response.body().string());
+                        callback.onCallback(MarkLocation.fromJson(locationJson));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -179,7 +201,7 @@ public class RestClient {
                 if(response.isSuccessful()) {
                     try {
                         JSONArray jsonArray = new JSONArray(response.body().string());
-                        List<Mark> marks = Mark.fromJSONArray(jsonArray);
+                        List<Mark> marks = Mark.fromJsonArray(jsonArray);
                         callback.onCallback(marks);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -189,7 +211,7 @@ public class RestClient {
         });
     }
 
-    public void postMark(Mark mark) {
+    public void postMark(Mark mark, CallbackInstance<Mark> callback) {
         JSONObject json = mark.toJson();
         RequestBody reqBody = RequestBody.create(MEDIA, json.toString());
         String url = this.SERVER_FQDN + this.MARKS;
@@ -207,13 +229,18 @@ public class RestClient {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()) {
-                    doSomething(response);
+                    try {
+                        JSONObject markJson = new JSONObject(response.body().string());
+                        callback.onCallback(Mark.fromJson(markJson));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
     }
 
-    public void getMark(String id) {
+    public void getMark(String id, CallbackInstance<Mark> callback) {
         String url = this.SERVER_FQDN + this.MARK.replace("<id>", id);
         final Request request = new Request.Builder()
                 .url(url)
@@ -228,7 +255,12 @@ public class RestClient {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()) {
-                    doSomething(response);
+                    try {
+                        JSONObject markJson = new JSONObject(response.body().string());
+                        callback.onCallback(Mark.fromJson(markJson));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
