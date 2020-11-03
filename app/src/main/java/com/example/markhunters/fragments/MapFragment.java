@@ -54,8 +54,12 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         super();
     }
 
-    public void initMarks() {
-        getClient().getMarks(marks -> MapFragment.this.marks = marks);
+    public void refreshMarks() {
+        if (map == null) return;
+        getClient().getMarks(_marks -> {
+            marks = _marks;
+            activity.runOnUiThread(() -> marks.forEach(m -> addMarker(m.getLatLng(), m.userId)));
+        });
     }
 
 
@@ -69,13 +73,8 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         Button addMarkButton = root.findViewById(R.id.addMarkButton);
         addMarkButton.setOnClickListener(new MarkButtonListener());
 
-        Button viewMarkTestButton = root.findViewById(R.id.viewMarkTestButton);
-        viewMarkTestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToFragment(new MarkViewFragment(1));
-            }
-        });
+        Button refreshButton = root.findViewById(R.id.refreshMarksButton);
+        refreshButton.setOnClickListener(view -> refreshMarks());
         return root;
     }
 
@@ -122,12 +121,16 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         MapsInitializer.initialize(context);
         map = googleMap;
         initLocationServices();
-        LatLng buenosaires = new LatLng (-34.6083, -58.3712);
-        addMarker(buenosaires,"el capo");
+        refreshMarks();
     }
 
     private void addMarker(LatLng latLng, String title) {
-        map.addMarker(new MarkerOptions().position(latLng).title(title).icon(bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark)));
+        try {
+            map.addMarker(new MarkerOptions().position(latLng).title(title).icon(bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark)));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initLocationServices() {

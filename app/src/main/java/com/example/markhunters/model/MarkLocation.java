@@ -1,5 +1,7 @@
 package com.example.markhunters.model;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -97,5 +99,9 @@ public class MarkLocation extends Model {
         }
 
         return locations;
+    }
+
+    public LatLng getLatLng() {
+        return new LatLng(gps.GPS_X, gps.GPS_Y);
     }
 }
