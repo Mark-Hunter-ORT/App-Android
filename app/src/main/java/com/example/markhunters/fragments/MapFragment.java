@@ -31,6 +31,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.jetbrains.annotations.NotNull;
@@ -56,9 +57,10 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
 
     public void refreshMarks() {
         if (map == null) return;
+        map.clear();
         getClient().getMarks(_marks -> {
             marks = _marks;
-            activity.runOnUiThread(() -> marks.forEach(m -> addMarker(m.getLatLng(), m.userId)));
+            activity.runOnUiThread(() -> marks.forEach(m -> addMarker(m.getLatLng(), m.userId, m.id)));
         });
     }
 
@@ -122,15 +124,17 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         map = googleMap;
         initLocationServices();
         refreshMarks();
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                marker.getId();
+                return false;
+            }
+        });
     }
 
-    private void addMarker(LatLng latLng, String title) {
-        try {
-            map.addMarker(new MarkerOptions().position(latLng).title(title).icon(bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark)));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void addMarker(LatLng latLng, String title, int markId) {
+        map.addMarker(new MarkerOptions().position(latLng).title(title).icon(bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark))).setTag(markId);
     }
 
     private void initLocationServices() {
