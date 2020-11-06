@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.markhunters.model.Category;
 import com.example.markhunters.model.MarkLocation;
 import com.example.markhunters.model.Mark;
+import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.rest.RestClientCallbacks.CallbackCollection;
 import com.example.markhunters.service.rest.RestClientCallbacks.CallbackInstance;
 
@@ -266,7 +267,7 @@ public class RestClient {
         });
     }
 
-    public void getUser(String id) {
+    public void getUser(String id, CallbackInstance<UserModel> callback) {
         String url = this.SERVER_FQDN + this.USER.replace("<id>", id);
         final Request request = new Request.Builder()
                 .url(url)
@@ -275,14 +276,16 @@ public class RestClient {
         this.httpclient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+                callback.onCallback(null);
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if(response.isSuccessful()) {
-                    doSomething(response);
-                }
+            public void onResponse(Call call, Response response) {
+                callback.onCallback(null);
+                // if (response.isSuccessful()) {
+                    // doSomething(response);
+                // }
+
             }
         });
     }

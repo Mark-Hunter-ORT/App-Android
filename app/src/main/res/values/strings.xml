@@ -4,7 +4,7 @@
     <string name="welcome_to_markhunters">Bienvenido a Mark Hunters</string>
     <string name="username">Usuario</string>
     <string name="google_id">google_id</string>
-    <string name="nickname">Nickname</string>
+    <string name="display_name">Name</string>
     <string name="email">Email</string>
     <string name="save">Guardar</string>
     <string name="cancel">Cancelar</string>

@@ -31,15 +31,9 @@ public class ProfileFragment extends MarkFragment
         emailTextView = rootView.findViewById(R.id.emailTextView);
 
         if (user != null) {
-            nicknameTextView.setText(user.getNickname());
+            nicknameTextView.setText(user.getDisplayName());
             emailTextView.setText(user.getEmail());
         }
-
-        Button editButton = rootView.findViewById(R.id.editButton);
-        editButton.setOnClickListener(view -> {
-            activity.startUserFormActivity(user);
-        });
-
         return rootView;
     }
     public ProfileFragment(@NotNull final UserModel user) {

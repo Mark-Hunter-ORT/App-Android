@@ -29,17 +29,20 @@ import org.jetbrains.annotations.NotNull;
 public class MenuActivity extends UserActivity implements NavigationView.OnNavigationItemSelectedListener {
     public static final String USER_MODEL = "user_model";
     private DrawerLayout drawer;
-    private UserModel user;
+    private UserModel userOld;
     private static String token = null;
+    private static UserModel user = null;
     private RestClient restClient;
 
     public static void setToken(String token) {
         MenuActivity.token = token;
     }
+    public static void setUser(UserModel user) { MenuActivity.user = user; };
 
     public RestClient getClient() {
         return this.restClient;
     }
+    public UserModel getUser() { return user; }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +64,10 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         TextView mName = navigationView.getHeaderView(0).findViewById(R.id.textViewName);
-        if (user.getPhotoStringUri() != null && user.getDisplayName() != null) {
+        if (userOld.getPhotoStringUri() != null && userOld.getDisplayName() != null) {
             ImageView mPic = navigationView.getHeaderView(0).findViewById(R.id.imageView);
-            mName.setText(user.getDisplayName());
-            mPic.setImageURI(user.getPhotoUri());
+            mName.setText(userOld.getDisplayName());
+            mPic.setImageURI(userOld.getPhotoUri());
         }
 
 
@@ -106,7 +109,7 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
     private void navigate(int itemId) {
         switch (itemId) {
             case R.id.profile:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment(user)).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment(userOld)).commit();
                 break;
             case R.id.menu_map:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MapFragment()).commit();
@@ -118,7 +121,7 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
     }
 
     private void setDataOnView() {
-        user = (UserModel) getIntent().getSerializableExtra(USER_MODEL);
+        userOld = (UserModel) getIntent().getSerializableExtra(USER_MODEL);
     }
 
     public void goToFragment(@NotNull MarkFragment fragment) {
@@ -126,6 +129,6 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
     }
 
     public String getUserUid() {
-        return user.getUid();
+        return userOld.getId();
     }
 }

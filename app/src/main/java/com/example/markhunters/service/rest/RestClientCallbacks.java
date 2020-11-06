@@ -17,4 +17,9 @@ public class RestClientCallbacks {
         void onCallback(List<T> models);
     }
 
+    @FunctionalInterface
+    public interface CallbackVoid {
+        void onCallback();
+    }
+
 }

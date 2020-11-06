@@ -68,22 +68,15 @@ public class SignInActivity extends UserActivity {
         }
     }
 
-    /**
-     * Last step. FirebaseUser is already authenticated. Navigate to MainActivity with user from database or go to UserCreationActivity to register a new one
-     * @param firebaseUser firebaseUser
-     * @param idToken
-     */
     private void onLoggedIn(@NotNull final FirebaseUser firebaseUser, String idToken) {
         final String uid = firebaseUser.getUid();
-        ServiceProvider.getUserDao().find(uid, userModel -> {
-            MenuActivity.setToken(idToken);
-            if (userModel == null) {
-                final UserModel model = UserModel.createNew(uid, firebaseUser.getEmail());
-                model.setFirebaseData(firebaseUser);
-                startUserFormActivity(model); // creation
+        ServiceProvider.getRestClient(idToken).getUser(uid, userModel -> {
+            if (userModel != null) {
+                MenuActivity.setToken(idToken);
+                MenuActivity.setUser(userModel);
+                startMenuActivity();
             } else {
-                userModel.setFirebaseData(firebaseUser);
-                startMenuActivity(userModel); // user exists, go to main activity
+                // todo y aca ?
             }
             loadingDialog.dismiss();
             finish();

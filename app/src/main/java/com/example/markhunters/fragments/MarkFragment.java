@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.markhunters.activities.MenuActivity;
+import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.rest.RestClient;
 
 public class MarkFragment extends Fragment {
@@ -29,6 +30,14 @@ public class MarkFragment extends Fragment {
 
     protected RestClient getClient() {
         return activity.getClient();
+    }
+
+    protected UserModel getUser() {
+        return activity.getUser();
+    }
+
+    protected String getUserId() {
+        return activity.getUser().getId();
     }
 
     protected void goToFragment(MarkFragment fragment) {
