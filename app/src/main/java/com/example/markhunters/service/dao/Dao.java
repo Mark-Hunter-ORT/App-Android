@@ -2,14 +2,16 @@ package com.example.markhunters.service.dao;
 
 import com.example.markhunters.model.Model;
 import com.example.markhunters.model.UserModel;
+import com.example.markhunters.service.rest.RestClientCallbacks;
 import com.example.markhunters.service.rest.RestClientCallbacks.CallbackInstance;
+import com.example.markhunters.service.rest.RestClientCallbacks.CallbackInstance2;
 
 import org.jetbrains.annotations.NotNull;
 
 
 public abstract class Dao <T extends Model> {
 
-    public void persist (@NotNull final T model, CallbackInstance<T> callback) {
+    public void persist (@NotNull final T model, CallbackInstance2<T> callback) {
         UserModel uModel = (UserModel) model;
         find(uModel.getKey(), persisted -> {
             if (persisted != null) {
@@ -20,7 +22,7 @@ public abstract class Dao <T extends Model> {
         });
     }
 
-    public abstract void find (@NotNull final String key, CallbackInstance<T> callback);
-    protected abstract void create (@NotNull final T model, CallbackInstance<T> callback);
-    protected abstract void update (@NotNull final T model, CallbackInstance<T> callback);
+    public abstract void find (@NotNull final String key, CallbackInstance2<T> callback);
+    protected abstract void create (@NotNull final T model, CallbackInstance2<T> callback);
+    protected abstract void update (@NotNull final T model, CallbackInstance2<T> callback);
 }

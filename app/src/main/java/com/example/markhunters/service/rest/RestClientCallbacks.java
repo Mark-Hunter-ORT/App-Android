@@ -1,20 +1,31 @@
 package com.example.markhunters.service.rest;
 
+import androidx.annotation.Nullable;
+
 import com.example.markhunters.model.Model;
 
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class RestClientCallbacks {
-    @FunctionalInterface
-    public interface CallbackInstance<T extends Model> {
-        void onCallback(@Nullable final T model);
+    public interface CallbackInstance<T extends Model> extends Fallible {
+        void onSuccess(@Nullable final T model);
     }
 
-    @FunctionalInterface
-    public interface CallbackCollection<T extends Model> {
-        void onCallback(List<T> models);
+    public interface CallbackInstance2<T extends Model> {
+        void onSuccess(@Nullable final T model);
+    }
+
+    public interface CallbackCollection<T extends Model> extends Fallible {
+        void onSuccess(List<T> models);
+    }
+    
+    public interface CallbackAction extends Fallible {
+        void onSuccess();
+    }
+    
+    public interface Fallible {
+        void onFailure(@Nullable String message); 
     }
 
 }
