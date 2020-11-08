@@ -355,10 +355,4 @@ public class RestClient {
             }
         });
     }
-    
-    public static class RestClientException extends RuntimeException {
-        public RestClientException (String message) {
-            super(message);
-        }
-    }
 }
