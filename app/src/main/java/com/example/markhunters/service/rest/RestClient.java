@@ -6,6 +6,8 @@ import android.util.Log;
 import com.example.markhunters.model.Category;
 import com.example.markhunters.model.MarkLocation;
 import com.example.markhunters.model.Mark;
+import com.example.markhunters.model.UserModel;
+import com.example.markhunters.service.rest.RestClientCallbacks.CallbackAction;
 import com.example.markhunters.service.rest.RestClientCallbacks.CallbackCollection;
 import com.example.markhunters.service.rest.RestClientCallbacks.CallbackInstance;
 
@@ -65,13 +67,15 @@ public class RestClient {
         this.httpclient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, IOException e) {
-                e.printStackTrace();
+                callback.onFailure(e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.isSuccessful()) {
-                    callback.onCallback(new Category(response.body().string()));
+                if (response.isSuccessful()) {
+                    callback.onSuccess(new Category(response.body().string()));
+                } else {
+                    callback.onFailure(response.message());
                 }
             }
         });
@@ -86,7 +90,7 @@ public class RestClient {
         this.httpclient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+                callback.onFailure(e.getMessage());
             }
 
             @Override
@@ -94,10 +98,12 @@ public class RestClient {
                 if(response.isSuccessful()) {
                     try {
                         JSONArray categoryJson = new JSONArray(response.body().string());
-                        callback.onCallback(Category.fromJsonArray(categoryJson));
+                        callback.onSuccess(Category.fromJsonArray(categoryJson));
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        callback.onFailure(e.getMessage());
                     }
+                } else {
+                    callback.onFailure(response.message());
                 }
             }
         });
@@ -112,7 +118,7 @@ public class RestClient {
         this.httpclient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+                callback.onFailure(e.getMessage());
             }
 
             @Override
@@ -120,10 +126,12 @@ public class RestClient {
                 if(response.isSuccessful()) {
                     try {
                         JSONArray locationJson = new JSONArray(response.body().string());
-                        callback.onCallback(MarkLocation.fromJsonArray(locationJson));
+                        callback.onSuccess(MarkLocation.fromJsonArray(locationJson));
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        callback.onFailure(e.getMessage());
                     }
+                } else {
+                    callback.onFailure(response.message());
                 }
             }
         });
@@ -141,18 +149,20 @@ public class RestClient {
         this.httpclient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+                callback.onFailure(e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     try {
                         JSONObject locationJson = new JSONObject(response.body().string());
-                        callback.onCallback(MarkLocation.fromJson(locationJson));
+                        callback.onSuccess(MarkLocation.fromJson(locationJson));
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        callback.onFailure(e.getMessage());
                     }
+                } else {
+                    callback.onFailure(response.message());
                 }
             }
         });
@@ -167,7 +177,7 @@ public class RestClient {
         this.httpclient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+                callback.onFailure(e.getMessage());
             }
 
             @Override
@@ -175,10 +185,12 @@ public class RestClient {
                 if(response.isSuccessful()) {
                     try {
                         JSONObject locationJson = new JSONObject(response.body().string());
-                        callback.onCallback(MarkLocation.fromJson(locationJson));
+                        callback.onSuccess(MarkLocation.fromJson(locationJson));
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        callback.onFailure(e.getMessage());
                     }
+                } else {
+                    callback.onFailure(response.message());
                 }
             }
         });
@@ -193,7 +205,7 @@ public class RestClient {
         this.httpclient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+                callback.onFailure(e.getMessage());
             }
 
             @Override
@@ -202,16 +214,18 @@ public class RestClient {
                     try {
                         JSONArray jsonArray = new JSONArray(response.body().string());
                         List<Mark> marks = Mark.fromJsonArray(jsonArray);
-                        callback.onCallback(marks);
+                        callback.onSuccess(marks);
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        callback.onFailure(e.getMessage());
                     }
+                } else {
+                    callback.onFailure(response.message());
                 }
             }
         });
     }
 
-    public void postMark(Mark mark, CallbackInstance<Mark> callback) {
+    public void postMark (Mark mark, CallbackInstance<Mark> callback) {
         JSONObject json = mark.toJson();
         RequestBody reqBody = RequestBody.create(MEDIA, json.toString());
         String url = this.SERVER_FQDN + this.MARKS;
@@ -223,7 +237,7 @@ public class RestClient {
         this.httpclient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+                callback.onFailure(e.getMessage());
             }
 
             @Override
@@ -231,10 +245,12 @@ public class RestClient {
                 if(response.isSuccessful()) {
                     try {
                         JSONObject markJson = new JSONObject(response.body().string());
-                        callback.onCallback(Mark.fromJson(markJson));
+                        callback.onSuccess(Mark.fromJson(markJson));
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        callback.onFailure(e.getMessage());
                     }
+                } else {
+                    callback.onFailure(response.message());
                 }
             }
         });
@@ -249,7 +265,7 @@ public class RestClient {
         this.httpclient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+                callback.onFailure(e.getMessage());
             }
 
             @Override
@@ -257,16 +273,18 @@ public class RestClient {
                 if(response.isSuccessful()) {
                     try {
                         JSONObject markJson = new JSONObject(response.body().string());
-                        callback.onCallback(Mark.fromJson(markJson));
+                        callback.onSuccess(Mark.fromJson(markJson));
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        callback.onFailure(e.getMessage());
                     }
+                } else {
+                    callback.onFailure(response.message());
                 }
             }
         });
     }
 
-    public void getUser(String id) {
+    public void getUser(String id, CallbackInstance<UserModel> callback) {
         String url = this.SERVER_FQDN + this.USER.replace("<id>", id);
         final Request request = new Request.Builder()
                 .url(url)
@@ -275,19 +293,21 @@ public class RestClient {
         this.httpclient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+                callback.onFailure(e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     doSomething(response);
+                } else {
+                    callback.onFailure(response.message());
                 }
             }
         });
     }
 
-    public void followUser(String id) {
+    public void followUser(String id, CallbackAction callback) {
         RequestBody reqbody = RequestBody.create(null, new byte[0]);
         String url = this.SERVER_FQDN + this.USER.replace("<id>", id);
         final Request request = new Request.Builder()
@@ -298,19 +318,21 @@ public class RestClient {
         this.httpclient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+                callback.onFailure(e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()) {
                     doSomething(response);
+                } else {
+                    callback.onFailure(response.message());
                 }
             }
         });
     }
 
-    public void unfollowUser(String id) {
+    public void unfollowUser(String id, CallbackAction callback) {
         String url = this.SERVER_FQDN + this.USER.replace("<id>", id);
         final Request request = new Request.Builder()
                 .url(url)
@@ -320,15 +342,23 @@ public class RestClient {
         this.httpclient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+                callback.onFailure(e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()) {
                     doSomething(response);
+                } else {
+                    callback.onFailure(response.message());
                 }
             }
         });
+    }
+    
+    public static class RestClientException extends RuntimeException {
+        public RestClientException (String message) {
+            super(message);
+        }
     }
 }

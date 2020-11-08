@@ -24,6 +24,7 @@ import com.example.markhunters.R;
 import com.example.markhunters.model.GPSLocation;
 import com.example.markhunters.model.Mark;
 import com.example.markhunters.model.MarkLocation;
+import com.example.markhunters.service.rest.RestClientCallbacks;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -49,7 +50,6 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
     private LocationListener locationListener;
     private Location currentLocation;
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1252;
-    private List<Mark> marks;
 
     public MapFragment () {
         super();
@@ -58,12 +58,19 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
     public void refreshMarks() {
         if (map == null) return;
         map.clear();
-        getClient().getMarks(_marks -> {
-            marks = _marks;
-            activity.runOnUiThread(() -> marks.forEach(m -> addMarker(m.getLatLng(), m.userId, m.id)));
+        getClient().getMarks(new RestClientCallbacks.CallbackCollection<Mark>() {
+            @Override
+            public void onSuccess(List<Mark> marks) {
+                activity.runOnUiThread(() -> marks.forEach(m -> addMarker(m.getLatLng(), m.userId, m.id)));
+            }
+
+            @Override
+            public void onFailure(@Nullable String message) {
+                System.out.println(message);
+                activity.runOnUiThread(() -> toast("Ocurrió un error intentando actualizar los marcadores"));
+            }
         });
     }
-
 
     @Nullable
     @Override
@@ -79,9 +86,6 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         refreshButton.setOnClickListener(view -> refreshMarks());
         return root;
     }
-
-
-
 
     private class MarkButtonListener implements View.OnClickListener {
         @Override
@@ -124,12 +128,9 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         map = googleMap;
         initLocationServices();
         refreshMarks();
-        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                marker.getId();
-                return false;
-            }
+        map.setOnMarkerClickListener(marker -> {
+            marker.getId();
+            return false;
         });
     }
 
