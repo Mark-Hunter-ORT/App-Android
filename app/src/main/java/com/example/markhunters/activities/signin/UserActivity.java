@@ -60,7 +60,6 @@ public class UserActivity extends AppCompatActivity {
 
         loadingDialog = new LoadingDialog(this);
 
-
     }
 
     @Override
@@ -100,6 +99,7 @@ public class UserActivity extends AppCompatActivity {
                 loadingDialog.dismiss();
             }
         });
+        finish();
     }
 
     protected void startMenuActivity(@NotNull final UserModel model) {

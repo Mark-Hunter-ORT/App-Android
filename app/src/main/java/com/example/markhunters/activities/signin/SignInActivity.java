@@ -35,10 +35,9 @@ public class SignInActivity extends UserActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fAuth.signOut();
         setContentView(R.layout.activity_sign_in);
-
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         final SignInButton gsButton = findViewById(R.id.sign_in_button);
         gsButton.setOnClickListener(new View.OnClickListener() {
             @Override

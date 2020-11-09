@@ -124,8 +124,4 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
     public void goToFragment(@NotNull MarkFragment fragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
     }
-
-    public String getUserUid() {
-        return user.getUid();
-    }
 }
