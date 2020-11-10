@@ -2,6 +2,7 @@ package com.example.markhunters.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +18,7 @@ public class Mark extends Model {
     public MarkLocation location;
     public Content content;
 
-    public Mark(String userId, String category, MarkLocation location, Content content){
+    public Mark(@NotNull String userId, @NotNull String category, @NotNull MarkLocation location, @NotNull Content content){
         this.userId = userId;
         this.category = category;
         this.location = location;
@@ -114,5 +115,9 @@ public class Mark extends Model {
 
     public LatLng getLatLng() {
         return location.getLatLng();
+    }
+
+    public String getTitle() {
+        return content.getText();
     }
 }

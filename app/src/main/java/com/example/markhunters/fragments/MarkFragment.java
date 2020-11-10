@@ -42,4 +42,8 @@ public class MarkFragment extends Fragment {
     protected void toast(@NotNull final String message) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
+
+    protected String getUserId() {
+        return activity.getUser().getUid();
+    }
 }

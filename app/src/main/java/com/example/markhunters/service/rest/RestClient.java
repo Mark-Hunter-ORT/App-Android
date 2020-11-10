@@ -225,7 +225,7 @@ public class RestClient {
         });
     }
 
-    public void postMark (Mark mark, CallbackInstance<Mark> callback) {
+    public void postMark (Mark mark, CallbackAction callback) {
         JSONObject json = mark.toJson();
         RequestBody reqBody = RequestBody.create(MEDIA, json.toString());
         String url = this.SERVER_FQDN + this.MARKS;
@@ -243,12 +243,7 @@ public class RestClient {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()) {
-                    try {
-                        JSONObject markJson = new JSONObject(response.body().string());
-                        callback.onSuccess(Mark.fromJson(markJson));
-                    } catch (JSONException e) {
-                        callback.onFailure(e.getMessage());
-                    }
+                    callback.onSuccess();
                 } else {
                     callback.onFailure(response.message());
                 }
