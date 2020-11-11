@@ -35,10 +35,29 @@ public class ProfileFragment extends MarkFragment
             emailTextView.setText(user.getEmail());
         }
 
+        Button logout = rootView.findViewById(R.id.logoutBtn);
+        Button volver= rootView.findViewById(R.id.Volver);
         Button editButton = rootView.findViewById(R.id.editButton);
         editButton.setOnClickListener(view -> {
             activity.startUserFormActivity(user);
         });
+
+        Button options = rootView.findViewById(R.id.Opciones);
+        options.setOnClickListener(view -> {
+            options.setVisibility(View.INVISIBLE);
+            editButton.setVisibility(View.VISIBLE);
+            logout.setVisibility(View.VISIBLE);
+            volver.setVisibility(View.VISIBLE);
+
+        });
+        volver.setOnClickListener(view -> {
+            options.setVisibility(View.VISIBLE);
+            editButton.setVisibility(View.INVISIBLE);
+            logout.setVisibility(View.INVISIBLE);
+            volver.setVisibility(View.INVISIBLE);
+
+        });
+
 
         return rootView;
     }
