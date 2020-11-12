@@ -3,8 +3,8 @@ package com.example.markhunters.fragments;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,19 +17,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.markhunters.R;
-import com.example.markhunters.model.MarkLocation;
+import com.example.markhunters.model.Content;
 import com.example.markhunters.model.Mark;
+import com.example.markhunters.model.MarkLocation;
+import com.example.markhunters.service.rest.RestClientCallbacks;
 import com.example.markhunters.ui.LoadingDialog;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 import static android.app.Activity.RESULT_OK;
+import static com.example.markhunters.service.base64.Base64Utils.toBase64;
 
 public class MarkCreationFragment extends MarkFragment
 {
     private ImageView mImageView;
     private EditText markTagText;
-    private Button uploadButton;
-    private Bitmap mBitmap = null; // todo this is what has to be stored in Firebase
-    private Mark mark;
+    private Bitmap mBitmap = null;
     private MarkLocation markLocation;
     private static final int CAMERA_REQUEST_CODE = 1001;
 
@@ -41,56 +45,71 @@ public class MarkCreationFragment extends MarkFragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_mark_creation, container, false);
-        uploadButton = rootView.findViewById(R.id.saveMarkButton);
+        Button uploadButton = rootView.findViewById(R.id.saveMarkButton);
         mImageView = rootView.findViewById(R.id.cameraView);
         markTagText = rootView.findViewById(R.id.markTagEditText);
 
         // 'take a picture' button action
-        rootView.findViewById(R.id.takePictureBtn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent (MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, CAMERA_REQUEST_CODE);
-            }
+        rootView.findViewById(R.id.takePictureBtn).setOnClickListener(view -> {
+            Intent intent = new Intent (MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, CAMERA_REQUEST_CODE);
         });
 
-        rootView.findViewById(R.id.cancelMarkButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToFragment(new MapFragment());
-            }
-        });
+        rootView.findViewById(R.id.cancelMarkButton).setOnClickListener(view -> goToFragment(new MapFragment()));
 
         // 'upload' button action.
-        uploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mBitmap == null) {
-                    Toast.makeText(getContext(), "Debe tomar una foto!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                // Todo: This is just a placeholder. Here we should call a DAO and store mBitmap in Firebase.
+        uploadButton.setOnClickListener(view -> {
+            if (validateFields()) {
                 LoadingDialog loadingDialog = new LoadingDialog(activity, "Subiendo");
                 loadingDialog.start();
-                (new Handler()).postDelayed(() -> {
-                    loadingDialog.dismiss();
-                    Toast.makeText(getContext(), "Mark creada!", Toast.LENGTH_SHORT).show();
-                    goToFragment(new MapFragment());
-                }, 5000); // dismiss the dialog after 5 seconds. Show success message toast.
+                final Mark mark = buildMark();
+                getClient().postMark(mark, new RestClientCallbacks.CallbackAction() {
+                    @Override
+                    public void onFailure(@Nullable String message) {
+                        activity.runOnUiThread(() -> Toast.makeText(context, "Ocurrió un error guardando el Mark", Toast.LENGTH_SHORT).show());
+                        loadingDialog.dismiss();
+                    }
+                    @Override
+                    public void onSuccess() {
+                        goToFragment(new MapFragment());
+                        loadingDialog.dismiss();
+                    }
+                });
             }
         });
 
         return rootView;
     }
 
+    private boolean validateFields() {
+        if (mBitmap == null) {
+            Toast.makeText(getContext(), "Debe tomar una foto!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (TextUtils.isEmpty(markTagText.getText())) {
+            Toast.makeText(getContext(), "Debe escribir un título!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    private Mark buildMark() {
+        ArrayList<String> contentImageList = new ArrayList<>();
+        String base64bitmap = toBase64(mBitmap);
+        contentImageList.add(base64bitmap);
+        String text = markTagText.getText().toString();
+        Content content = new Content(text, contentImageList);
+        return new Mark(getUserId(), "test_cat", markLocation, content); // todo usar categoría real
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                final Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            if (resultCode == RESULT_OK && data != null) {
+                final Bitmap bitmap = (Bitmap) Objects.requireNonNull(data.getExtras()).get("data");
                 mImageView.setImageBitmap(bitmap);
-                mBitmap = bitmap; // todo this is what has to be stored in Firebase
+                mBitmap = bitmap;
             }
         }
     }

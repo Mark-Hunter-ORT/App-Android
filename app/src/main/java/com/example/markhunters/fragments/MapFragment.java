@@ -61,7 +61,7 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         getClient().getMarks(new RestClientCallbacks.CallbackCollection<Mark>() {
             @Override
             public void onSuccess(List<Mark> marks) {
-                activity.runOnUiThread(() -> marks.forEach(m -> addMarker(m.getLatLng(), m.userId, m.id)));
+                activity.runOnUiThread(() -> marks.forEach(m -> addMarker(m.getLatLng(), m.getTitle(), m.id)));
             }
 
             @Override

@@ -42,4 +42,7 @@ public class Content {
         return this.hasImages;
     }
 
+    public String getText() {
+        return text;
+    }
 }
