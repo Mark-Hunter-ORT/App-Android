@@ -128,9 +128,10 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         map = googleMap;
         initLocationServices();
         refreshMarks();
-        map.setOnMarkerClickListener(marker -> {
-            marker.getId();
-            return false;
+        map.setOnMarkerClickListener(mark -> {
+            MarkViewFragment markViewFragment = new MarkViewFragment(String.valueOf(mark.getTag()));
+            goToFragment(markViewFragment);
+            return true;
         });
     }
 

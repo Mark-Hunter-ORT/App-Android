@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
-import static com.example.markhunters.service.base64.Base64Utils.toBase64;
+import static com.example.markhunters.service.image.ImageUtils.toBase64;
 
 public class MarkCreationFragment extends MarkFragment
 {
