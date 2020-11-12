@@ -6,21 +6,18 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.markhunters.R;
 import com.example.markhunters.activities.MenuActivity;
-import com.example.markhunters.service.dao.Dao;
-import com.example.markhunters.service.ServiceProvider;
 import com.example.markhunters.model.UserModel;
+import com.example.markhunters.service.ServiceProvider;
+import com.example.markhunters.service.dao.Dao;
 import com.example.markhunters.ui.LoadingDialog;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -90,14 +87,11 @@ public class UserActivity extends AppCompatActivity {
     public void signout() {
         loadingDialog.start();
         fAuth.signOut(); // clear user data
-        gsc.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                loadingDialog.dismiss();
-            }
+        gsc.signOut().addOnCompleteListener(task -> {
+            Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            loadingDialog.dismiss();
         });
         finish();
     }

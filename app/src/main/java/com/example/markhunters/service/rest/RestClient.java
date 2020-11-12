@@ -241,7 +241,7 @@ public class RestClient {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(Call call, Response response) {
                 if(response.isSuccessful()) {
                     callback.onSuccess();
                 } else {

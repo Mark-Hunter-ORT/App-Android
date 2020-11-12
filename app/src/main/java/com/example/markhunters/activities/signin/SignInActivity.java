@@ -35,7 +35,6 @@ public class SignInActivity extends UserActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // fAuth.signOut();
         setContentView(R.layout.activity_sign_in);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         final SignInButton gsButton = findViewById(R.id.sign_in_button);
@@ -90,12 +89,9 @@ public class SignInActivity extends UserActivity {
     }
 
     private void onLoggedIn(@NotNull final FirebaseUser firebaseUser) {
-        firebaseUser.getIdToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-            @Override
-            public void onComplete(@NonNull Task<GetTokenResult> task) {
-                GetTokenResult result = task.getResult();
-                onLoggedIn(firebaseUser, result.getToken());
-            }
+        firebaseUser.getIdToken(true).addOnCompleteListener(task -> {
+            GetTokenResult result = task.getResult();
+            onLoggedIn(firebaseUser, result.getToken());
         });
     }
 
