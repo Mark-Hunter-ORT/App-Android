@@ -12,7 +12,7 @@ public class GPSLocation {
     }
 
     public GPSLocation(Location loc){
-        this.GPS_Y = loc.getLatitude();
-        this.GPS_X = loc.getLongitude();
+        this.GPS_X = loc.getLatitude();
+        this.GPS_Y = loc.getLongitude();
     }
 }
