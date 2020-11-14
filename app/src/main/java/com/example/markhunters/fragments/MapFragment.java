@@ -60,7 +60,7 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
     public void refreshMarks() {
         if (map == null) return;
         map.clear();
-        /*getClient().getMarks(new RestClientCallbacks.CallbackCollection<Mark>() {
+        getClient().getMarks(new RestClientCallbacks.CallbackCollection<Mark>() {
             @Override
             public void onSuccess(List<Mark> marks) {
                 activity.runOnUiThread(() -> marks.forEach(m -> addMarker(m.getLatLng(), m.getTitle(), m.id)));
@@ -71,8 +71,9 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
                 System.out.println(message);
                 activity.runOnUiThread(() -> toast("Ocurrió un error intentando actualizar los marcadores"));
             }
-        });*/
-        if(currentLocation != null) {
+        });
+
+        /* if(currentLocation != null) {
             getClient().getMarksByDistance(currentLocation, 1000.4, new RestClientCallbacks.CallbackCollection<Mark>() {
                 @Override
                 public void onSuccess(List<Mark> marks) {
@@ -85,7 +86,7 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
                     activity.runOnUiThread(() -> toast("Ocurrió un error intentando actualizar los marcadores"));
                 }
             });
-        }
+        }*/
     }
 
     @Nullable
