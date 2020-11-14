@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,6 +35,8 @@ public class MarkViewFragment extends MarkFragment {
         View root = inflater.inflate(R.layout.fragment_mark_view, container, false);
         mImageView = root.findViewById(R.id.markViewImage);
         mTextView = root.findViewById(R.id.markViewText);
+        Button goBackButton = root.findViewById(R.id.goBackButton);
+        goBackButton.setOnClickListener(view -> goToFragment(new MapFragment()));
         getClient().getMark(markId, new RestClientCallbacks.CallbackInstance<Mark>() {
             @Override
             public void onFailure(@Nullable String message) {
