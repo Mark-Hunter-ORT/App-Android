@@ -3,11 +3,15 @@ package com.example.markhunters.model;
 import android.net.Uri;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.auth.User;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,5 +94,17 @@ public class UserModel extends Model {
 
     public Uri getPhotoUri () {
         return Uri.parse(photoStringUri);
+    }
+
+    public static UserModel fromJson(JSONObject json) {
+        UserModel user = null;
+        try {
+            user = new UserModel(json.getString("uid"), json.getString("username"),
+                    json.getString("email"));
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return user;
     }
 }
