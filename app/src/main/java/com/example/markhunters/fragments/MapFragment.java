@@ -32,7 +32,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.jetbrains.annotations.NotNull;
@@ -128,9 +127,10 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         map = googleMap;
         initLocationServices();
         refreshMarks();
-        map.setOnMarkerClickListener(marker -> {
-            marker.getId();
-            return false;
+        map.setOnMarkerClickListener(mark -> {
+            MarkViewFragment markViewFragment = new MarkViewFragment(String.valueOf(mark.getTag()));
+            goToFragment(markViewFragment);
+            return true;
         });
     }
 
