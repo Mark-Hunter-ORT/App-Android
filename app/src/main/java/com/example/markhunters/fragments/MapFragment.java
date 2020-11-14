@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.example.markhunters.R;
 import com.example.markhunters.model.GPSLocation;
 import com.example.markhunters.model.Mark;
 import com.example.markhunters.model.MarkLocation;
+import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.rest.RestClientCallbacks;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -69,6 +71,21 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
                 activity.runOnUiThread(() -> toast("Ocurrió un error intentando actualizar los marcadores"));
             }
         });
+
+        /* if(currentLocation != null) {
+            getClient().getMarksByDistance(currentLocation, 1000.4, new RestClientCallbacks.CallbackCollection<Mark>() {
+                @Override
+                public void onSuccess(List<Mark> marks) {
+                    activity.runOnUiThread(() -> marks.forEach(m -> addMarker(m.getLatLng(), m.getTitle(), m.id)));
+                }
+
+                @Override
+                public void onFailure(@Nullable String message) {
+                    System.out.println(message);
+                    activity.runOnUiThread(() -> toast("Ocurrió un error intentando actualizar los marcadores"));
+                }
+            });
+        }*/
     }
 
     @Nullable

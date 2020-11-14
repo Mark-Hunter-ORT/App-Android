@@ -1,6 +1,8 @@
 package com.example.markhunters.service.rest;
 
 import org.jetbrains.annotations.NotNull;
+
+import android.location.Location;
 import android.util.Log;
 
 import com.example.markhunters.model.Category;
@@ -10,6 +12,7 @@ import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.rest.RestClientCallbacks.CallbackAction;
 import com.example.markhunters.service.rest.RestClientCallbacks.CallbackCollection;
 import com.example.markhunters.service.rest.RestClientCallbacks.CallbackInstance;
+import com.google.firebase.firestore.auth.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,7 +38,9 @@ public class RestClient {
     private final String LOCATION = "api/location/<id>/";
     private final String MARKS = "api/mark/";
     private final String MARK = "api/mark/<id>/";
+    private final String MARKS_DISTANCE = "api/mark/<lat>/<lon>/<distance>/";
     private final String USER = "api/user/<id>/";
+    private final String USER_POST = "api/user/";
     private final String USER_FOLLOW = "api/user/<id>/follow/";
     private final String USER_UNFOLLOW = "api/user/<id>/unfollow/";
     private final MediaType MEDIA = MediaType.parse("application/json; charset=utf-8");
@@ -225,6 +230,38 @@ public class RestClient {
         });
     }
 
+    public void getMarksByDistance(Location loc, Double distance, CallbackCollection<Mark> callback) {
+        String url = this.SERVER_FQDN + this.MARKS_DISTANCE.replace(
+                "<lon>", String.valueOf(loc.getLatitude())).replace(
+                "<lat>", String.valueOf(loc.getLongitude())).replace(
+                "<distance>", distance.toString());
+        final Request request = new Request.Builder()
+                .url(url)
+                .addHeader("User-Token", this.token)
+                .build();
+        this.httpclient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                callback.onFailure(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()) {
+                    try {
+                        JSONArray jsonArray = new JSONArray(response.body().string());
+                        List<Mark> marks = Mark.fromJsonArray(jsonArray);
+                        callback.onSuccess(marks);
+                    } catch (JSONException e) {
+                        callback.onFailure(e.getMessage());
+                    }
+                } else {
+                    callback.onFailure(response.message());
+                }
+            }
+        });
+    }
+
     public void postMark (Mark mark, CallbackAction callback) {
         JSONObject json = mark.toJson();
         RequestBody reqBody = RequestBody.create(MEDIA, json.toString());
@@ -295,6 +332,38 @@ public class RestClient {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     doSomething(response);
+                } else {
+                    callback.onFailure(response.message());
+                }
+            }
+        });
+    }
+
+    public void postUser(String username, CallbackInstance<UserModel> callback) {
+        String json = "{\"username\":\"<username>\"}".replace("<username>", username);
+        RequestBody reqBody = RequestBody.create(MEDIA, json);
+        String url = this.SERVER_FQDN + this.USER_POST;
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(reqBody)
+                .addHeader("User-Token", this.token)
+                .build();
+        this.httpclient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                callback.onFailure(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()) {
+                    try {
+                        JSONObject userJson = new JSONObject(response.body().string());
+                        UserModel user = UserModel.fromJson(userJson);
+                        callback.onSuccess(user);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     callback.onFailure(response.message());
                 }
