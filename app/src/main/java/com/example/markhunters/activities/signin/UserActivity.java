@@ -13,7 +13,6 @@ import com.example.markhunters.R;
 import com.example.markhunters.activities.MenuActivity;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.ServiceProvider;
-import com.example.markhunters.service.dao.Dao;
 import com.example.markhunters.ui.LoadingDialog;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -29,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 public class UserActivity extends AppCompatActivity {
     protected FirebaseAuth fAuth;
     protected FirebaseFirestore fStore;
-    protected Dao<UserModel> dao;
     protected GoogleSignInOptions gso;
     protected GoogleSignInClient gsc;
     protected LoadingDialog loadingDialog = null;
@@ -51,9 +49,6 @@ public class UserActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         gsc = GoogleSignIn.getClient(this, gso);
-
-        // Dao setup
-        dao = ServiceProvider.getUserDao();
 
         loadingDialog = new LoadingDialog(this);
 

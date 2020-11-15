@@ -1,7 +1,6 @@
 package com.example.markhunters.activities;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,13 +14,13 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.markhunters.R;
+import com.example.markhunters.activities.signin.UserActivity;
 import com.example.markhunters.fragments.MapFragment;
 import com.example.markhunters.fragments.MarkFragment;
 import com.example.markhunters.fragments.ProfileFragment;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.ServiceProvider;
 import com.example.markhunters.service.rest.RestClient;
-import com.example.markhunters.activities.signin.UserActivity;
 import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,12 +29,7 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
     public static final String USER_MODEL = "user_model";
     private DrawerLayout drawer;
     private UserModel user;
-    private static String token = null;
     private RestClient restClient;
-
-    public static void setToken(String token) {
-        MenuActivity.token = token;
-    }
 
     public RestClient getClient() {
         return this.restClient;
@@ -45,19 +39,12 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-
-        validateToken();
-        restClient = ServiceProvider.getRestClient(token);
-
         setDataOnView();
-
+        restClient = ServiceProvider.getRestClient(user.getToken());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         drawer = findViewById(R.id.drawer_layout);
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         TextView mName = navigationView.getHeaderView(0).findViewById(R.id.textViewName);
@@ -74,12 +61,6 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
         if (savedInstanceState == null) {
             navigate(R.id.menu_map);
             navigationView.setCheckedItem(R.id.menu_map);
-        }
-    }
-
-    private void validateToken() {
-        if (token == null || TextUtils.isEmpty(token)) {
-            throw new RuntimeException("Token inválido");
         }
     }
 

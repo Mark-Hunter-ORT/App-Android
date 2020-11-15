@@ -8,8 +8,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.example.markhunters.R;
 import com.example.markhunters.model.UserModel;
+import com.example.markhunters.service.ServiceProvider;
+import com.example.markhunters.service.rest.RestClient;
+import com.example.markhunters.service.rest.RestClientCallbacks;
 
 public class UserFormActivity extends UserActivity {
 
@@ -20,6 +25,9 @@ public class UserFormActivity extends UserActivity {
     private UserModel originalModel = null;
     private String displayName;
     private String photoStringUri;
+    private RestClient restClient;
+    private String token;
+
 
     @Override
     protected View getMainLayoutView() {
@@ -35,6 +43,7 @@ public class UserFormActivity extends UserActivity {
         nicknamePlainText = findViewById(R.id.nicknamePlainText);
         emailTextView =  findViewById(R.id.emailTextView);
         setDataOnView();
+        restClient = ServiceProvider.getRestClient(token);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -44,13 +53,22 @@ public class UserFormActivity extends UserActivity {
             if (validateFields()) {
                 loadingDialog.start();
                 // build the model that will be inserted in the database
-                final UserModel toPersist = new UserModel(uid, nicknamePlainText.getText().toString(), emailTextView.getText().toString(), displayName, photoStringUri);
-                dao.persist(toPersist, model -> {
-                    if (model != null) {
-                        Toast.makeText(UserFormActivity.this, "Usuario guardado", Toast.LENGTH_SHORT).show();
-                        startMenuActivity(model);
-                        loadingDialog.dismiss();
-                    } // Todo else ERROR
+                restClient.postUser(nicknamePlainText.getText().toString(), new RestClientCallbacks.CallbackInstance<UserModel>() {
+                    @Override
+                    public void onSuccess(@Nullable UserModel model) {
+                        if (model != null) {
+                            model.setToken(token);
+                            runOnUiThread(() -> Toast.makeText(UserFormActivity.this, "Usuario guardado", Toast.LENGTH_SHORT).show());
+                            startMenuActivity(model);
+                            loadingDialog.dismiss();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@Nullable String message) {
+                        System.out.println(message);
+                        Toast.makeText(UserFormActivity.this, "Ocurrió un problema guardando el usuario", Toast.LENGTH_SHORT).show();
+                    }
                 });
             }
         });
@@ -86,6 +104,7 @@ public class UserFormActivity extends UserActivity {
         uid = userModel.getUid();
         photoStringUri = userModel.getPhotoStringUri();
         displayName = userModel.getDisplayName();
+        token = userModel.getToken();
         if (userModel.getNickname() != null) { // Existing user, "Edit" was invoked
             nicknamePlainText.setText(userModel.getNickname());
             originalModel = userModel;

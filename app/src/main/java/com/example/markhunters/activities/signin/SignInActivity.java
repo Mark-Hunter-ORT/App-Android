@@ -6,14 +6,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.markhunters.R;
-import com.example.markhunters.activities.MenuActivity;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.ServiceProvider;
+import com.example.markhunters.service.rest.RestClient;
+import com.example.markhunters.service.rest.RestClientCallbacks;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.SignInButton;
@@ -35,6 +37,8 @@ public class SignInActivity extends UserActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fAuth.signOut(); // clear user data
+        gsc.signOut();
         setContentView(R.layout.activity_sign_in);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         final SignInButton gsButton = findViewById(R.id.sign_in_button);
@@ -72,19 +76,31 @@ public class SignInActivity extends UserActivity {
      * @param idToken
      */
     private void onLoggedIn(@NotNull final FirebaseUser firebaseUser, String idToken) {
-        final String uid = firebaseUser.getUid();
-        ServiceProvider.getUserDao().find(uid, userModel -> {
-            MenuActivity.setToken(idToken);
-            if (userModel == null) {
-                final UserModel model = UserModel.createNew(uid, firebaseUser.getEmail());
-                model.setFirebaseData(firebaseUser);
-                startUserFormActivity(model); // creation
-            } else {
-                userModel.setFirebaseData(firebaseUser);
-                startMenuActivity(userModel); // user exists, go to main activity
+        RestClient restClient = ServiceProvider.getRestClient(idToken);
+        restClient.getUser(idToken, new RestClientCallbacks.CallbackInstance<UserModel>() {
+            @Override
+            public void onFailure(@Nullable String message) {
+                System.out.println(message);
+                runOnUiThread(() -> Toast.makeText(SignInActivity.this, "Ocurrió un problema guardando el usuario", Toast.LENGTH_SHORT).show());
+                loadingDialog.dismiss();
+                finish();
             }
-            loadingDialog.dismiss();
-            finish();
+
+            @Override
+            public void onSuccess(@Nullable UserModel userModel) {
+                if (userModel == null) {
+                    final UserModel model = UserModel.createNew(firebaseUser.getUid(), firebaseUser.getEmail());
+                    model.setToken(idToken);
+                    model.setFirebaseData(firebaseUser);
+                    startUserFormActivity(model); // creation
+                } else {
+                    userModel.setFirebaseData(firebaseUser);
+                    userModel.setToken(idToken);
+                    startMenuActivity(userModel); // user exists, go to main activity
+                }
+                loadingDialog.dismiss();
+                finish();
+            }
         });
     }
 

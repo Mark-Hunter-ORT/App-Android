@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserModel extends Model {
+    private String token;
     private String uid;
     private String nickname;
     private String email;
@@ -106,5 +107,13 @@ public class UserModel extends Model {
             e.printStackTrace();
         }
         return user;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
     }
 }
