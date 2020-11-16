@@ -341,8 +341,9 @@ public class RestClient {
                 } else {
                     if (response.code() == 404) {
                         callback.onSuccess(null);
+                    } else {
+                        callback.onFailure(response.message());
                     }
-                    callback.onFailure(response.message());
                 }
             }
         });

@@ -80,7 +80,7 @@ public class SignInActivity extends UserActivity {
                 @Override
                 public void onFailure(@Nullable String message) {
                     System.out.println(message);
-                    runOnUiThread(() -> Toast.makeText(SignInActivity.this, "Ocurrió un problema guardando el usuario", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(SignInActivity.this, "Ocurrió un problema obteniendo el usuario", Toast.LENGTH_SHORT).show());
                     loadingDialog.dismiss();
                 }
                 @Override
