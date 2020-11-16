@@ -32,6 +32,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,14 +42,18 @@ import java.util.List;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class MapFragment extends MarkFragment implements OnMapReadyCallback {
+    private final float  MAX_DISTANCE_ENABLED = 50; // metros
+    private final float  MAX_DISTANCE_DISABLED_NEAR = 500; // metros
+    private final double MAX_FETCH_DISTANCE = 1000.4; // metros
     MapView mapView = null;
-
     GoogleMap map;
-    private LocationManager locationManager;
-    private LocationListener locationListener;
     private Location currentLocation;
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1252;
+    private BitmapDescriptor icon_enabled = null;
+    private BitmapDescriptor icon_disabled_near = null;
+    private BitmapDescriptor icon_disabled_far = null;
 
     public MapFragment () {
         super();
@@ -58,7 +63,7 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         if (map == null) return;
         map.clear();
         if (currentLocation != null) {
-            getClient().getMarksByDistance(currentLocation, 1000.4, new RestClientCallbacks.CallbackCollection<Mark>() {
+            getClient().getMarksByDistance(currentLocation, MAX_FETCH_DISTANCE, new RestClientCallbacks.CallbackCollection<Mark>() {
                 @Override
                 public void onSuccess(List<Mark> marks) {
                     activity.runOnUiThread(() -> marks.forEach(m -> addMarker(m.getLatLng(), m.getTitle(), m.id)));
@@ -113,7 +118,6 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         }
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -129,16 +133,69 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         map = googleMap;
         initLocationServices();
         refreshMarks();
-        map.setOnMarkerClickListener(mark -> {
-            MarkViewFragment markViewFragment = new MarkViewFragment(String.valueOf(mark.getTag()));
-            goToFragment(markViewFragment);
-            return true;
-        });
+        map.setOnMarkerClickListener(new MarkListener());
         map.getUiSettings().setZoomControlsEnabled(true);
     }
 
+    private class MarkListener implements GoogleMap.OnMarkerClickListener {
+        @Override
+        public boolean onMarkerClick(Marker mark) {
+            if (isWithinRange(mark.getPosition())) {
+                MarkViewFragment markViewFragment = new MarkViewFragment(String.valueOf(mark.getTag()));
+                goToFragment(markViewFragment);
+            } else {
+                activity.runOnUiThread(() -> toast("Debe acercarse más al mark para ver el contenido"));
+            }
+            return true;
+        }
+        // Obtiene la distancia entre dos pares de coordenadas y la compara con la distancia max para desbloquear el mark
+        private boolean isWithinRange(LatLng latLng) {
+            return getDistanceFrom(latLng) <= MAX_DISTANCE_ENABLED;
+        }
+    }
+
+    private float getDistanceFrom(LatLng latLng) {
+        float[] results = new float[1];
+        Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(), latLng.latitude, latLng.longitude, results);
+        return results[0];
+    }
+
     private void addMarker(LatLng latLng, String title, int markId) {
-        map.addMarker(new MarkerOptions().position(latLng).title(title).icon(bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark))).setTag(markId);
+        BitmapDescriptor icon = getIcon(latLng);
+        map.addMarker(new MarkerOptions().position(latLng).title(title).icon(icon)).setTag(markId);
+    }
+
+    private BitmapDescriptor getIcon(LatLng latLng) {
+        float distance = getDistanceFrom(latLng);
+        if (distance > MAX_DISTANCE_ENABLED) {
+            if (distance > MAX_DISTANCE_DISABLED_NEAR) {
+                return getIconDisabledFar();
+            } else return getIconDisabledNear();
+        } else {
+            return getIconEnabled();
+        }
+    }
+
+    // LAZY LOAD
+    private BitmapDescriptor getIconDisabledFar() {
+        if (icon_disabled_far == null) {
+            icon_disabled_far = bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark_disabled_far);
+        }
+        return icon_disabled_far;
+    }
+
+    private BitmapDescriptor getIconDisabledNear() {
+        if (icon_disabled_near == null) {
+            icon_disabled_near = bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark_disabled_near);
+        }
+        return icon_disabled_near;
+    }
+
+    private BitmapDescriptor getIconEnabled() {
+        if (icon_enabled == null) {
+            icon_enabled = bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark_enabled);
+        }
+        return icon_enabled;
     }
 
     private void initLocationServices() {
@@ -150,9 +207,9 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         } else {
             if (map != null) {
                 map.setMyLocationEnabled(true);
-                locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+                LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
                 currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                locationListener = new MarkLocationListener();
+                LocationListener locationListener = new MarkLocationListener();
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1,
                         1, locationListener);
             }
