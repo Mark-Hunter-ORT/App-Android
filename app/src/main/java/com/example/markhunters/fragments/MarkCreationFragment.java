@@ -99,7 +99,7 @@ public class MarkCreationFragment extends MarkFragment
         contentImageList.add(base64bitmap);
         String text = markTagText.getText().toString();
         Content content = new Content(text, contentImageList);
-        return new Mark(getUserId(), "test_cat", markLocation, content); // todo usar categoría real
+        return new Mark("test_cat", markLocation, content); // todo usar categoría real
     }
 
     @Override

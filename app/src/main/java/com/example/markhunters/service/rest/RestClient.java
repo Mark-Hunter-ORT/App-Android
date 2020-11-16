@@ -331,9 +331,19 @@ public class RestClient {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    doSomething(response);
+                    try {
+                        JSONObject userJson = new JSONObject(response.body().string());
+                        UserModel user = UserModel.fromJson(userJson);
+                        callback.onSuccess(user);
+                    } catch (JSONException e) {
+                        callback.onFailure(e.getMessage());
+                    }
                 } else {
-                    callback.onFailure(response.message());
+                    if (response.code() == 404) {
+                        callback.onSuccess(null);
+                    } else {
+                        callback.onFailure(response.message());
+                    }
                 }
             }
         });
@@ -362,7 +372,7 @@ public class RestClient {
                         UserModel user = UserModel.fromJson(userJson);
                         callback.onSuccess(user);
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        callback.onFailure(e.getMessage());
                     }
                 } else {
                     callback.onFailure(response.message());

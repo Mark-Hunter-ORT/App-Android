@@ -2,14 +2,12 @@ package com.example.markhunters.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Mark extends Model {
     public Integer id;
@@ -18,28 +16,13 @@ public class Mark extends Model {
     public MarkLocation location;
     public Content content;
 
-    public Mark(@NotNull String userId, @NotNull String category, @NotNull MarkLocation location, @NotNull Content content){
-        this.userId = userId;
-        this.category = category;
-        this.location = location;
-        this.content = content;
-    }
-
+    // Este es el mark que viene del server
     public Mark(String userId, String category, MarkLocation location, Content content, Integer id){
         this.userId = userId;
         this.category = category;
         this.location = location;
         this.content = content;
         this.id = id;
-    }
-
-    // todo estos dos hay que dejarlos hasta que matemos a FirebaseUserDao
-    public Map<String, Object> toDto() {
-        return null;
-    }
-
-    public String getKey() {
-        return null;
     }
 
     public JSONObject toJson(){
@@ -64,17 +47,11 @@ public class Mark extends Model {
         return json;
     }
 
+    // Esto es para Marks nuevos, todavía no tienen id ni uid
     public Mark(String category, MarkLocation location, Content content){
         this.category = category;
         this.location = location;
         this.content = content;
-    }
-
-    public Mark(String category, MarkLocation location, Content content, Integer id){
-        this.category = category;
-        this.location = location;
-        this.content = content;
-        this.id = id;
     }
 
     public static Mark fromJson(JSONObject json){

@@ -134,6 +134,7 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
             goToFragment(markViewFragment);
             return true;
         });
+        map.getUiSettings().setZoomControlsEnabled(true);
     }
 
     private void addMarker(LatLng latLng, String title, int markId) {
