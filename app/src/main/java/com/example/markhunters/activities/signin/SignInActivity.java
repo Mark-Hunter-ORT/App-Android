@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.markhunters.R;
+import com.example.markhunters.model.Mark;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.ServiceProvider;
 import com.example.markhunters.service.rest.RestClient;
@@ -30,6 +31,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class SignInActivity extends UserActivity {
     private static final String TAG = "AndroidClarified";
     private static final int RC_SIGN_IN = 101;
@@ -42,13 +45,10 @@ public class SignInActivity extends UserActivity {
         setContentView(R.layout.activity_sign_in);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         final SignInButton gsButton = findViewById(R.id.sign_in_button);
-        gsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Here we should check internet connection
-                final Intent signInIntent = gsc.getSignInIntent();
-                startActivityForResult(signInIntent, RC_SIGN_IN);
-            }
+        gsButton.setOnClickListener(v -> {
+            // Here we should check internet connection
+            final Intent signInIntent = gsc.getSignInIntent();
+            startActivityForResult(signInIntent, RC_SIGN_IN);
         });
     }
 
@@ -70,44 +70,31 @@ public class SignInActivity extends UserActivity {
         }
     }
 
-    /**
-     * Last step. FirebaseUser is already authenticated. Navigate to MainActivity with user from database or go to UserCreationActivity to register a new one
-     * @param firebaseUser firebaseUser
-     * @param idToken
-     */
-    private void onLoggedIn(@NotNull final FirebaseUser firebaseUser, String idToken) {
-        RestClient restClient = ServiceProvider.getRestClient(idToken);
-        restClient.getUser(idToken, new RestClientCallbacks.CallbackInstance<UserModel>() {
-            @Override
-            public void onFailure(@Nullable String message) {
-                System.out.println(message);
-                runOnUiThread(() -> Toast.makeText(SignInActivity.this, "Ocurrió un problema guardando el usuario", Toast.LENGTH_SHORT).show());
-                loadingDialog.dismiss();
-                finish();
-            }
-
-            @Override
-            public void onSuccess(@Nullable UserModel userModel) {
-                if (userModel == null) {
-                    final UserModel model = UserModel.createNew(firebaseUser.getUid(), firebaseUser.getEmail());
-                    model.setToken(idToken);
-                    model.setFirebaseData(firebaseUser);
-                    startUserFormActivity(model); // creation
-                } else {
-                    userModel.setFirebaseData(firebaseUser);
-                    userModel.setToken(idToken);
-                    startMenuActivity(userModel); // user exists, go to main activity
-                }
-                loadingDialog.dismiss();
-                finish();
-            }
-        });
-    }
-
     private void onLoggedIn(@NotNull final FirebaseUser firebaseUser) {
         firebaseUser.getIdToken(true).addOnCompleteListener(task -> {
             GetTokenResult result = task.getResult();
-            onLoggedIn(firebaseUser, result.getToken());
+            String token = result.getToken();
+            RestClient restClient = ServiceProvider.getRestClient(token);
+            UserActivity.setRestClient(restClient);
+            UserActivity.restClient.getUser(firebaseUser.getUid(), new RestClientCallbacks.CallbackInstance<UserModel>() {
+                @Override
+                public void onFailure(@Nullable String message) {
+                    System.out.println(message);
+                    runOnUiThread(() -> Toast.makeText(SignInActivity.this, "Ocurrió un problema guardando el usuario", Toast.LENGTH_SHORT).show());
+                    loadingDialog.dismiss();
+                }
+                @Override
+                public void onSuccess(@Nullable UserModel userModel) {
+                    if (userModel == null) {
+                        startUserFormActivity(firebaseUser); // creation
+                    } else {
+                        userModel.setFirebaseData(firebaseUser);
+                        startMenuActivity(userModel); // user exists, go to main activity
+                    }
+                    loadingDialog.dismiss();
+                    finish();
+                }
+            });
         });
     }
 
@@ -136,7 +123,7 @@ public class SignInActivity extends UserActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             final FirebaseUser user = fAuth.getCurrentUser();
-                            onLoggedIn(user, idToken);
+                            onLoggedIn(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());

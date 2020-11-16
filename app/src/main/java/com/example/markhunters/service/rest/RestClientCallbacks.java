@@ -12,10 +12,6 @@ public class RestClientCallbacks {
         void onSuccess(@Nullable final T model);
     }
 
-    public interface CallbackInstance2<T extends Model> {
-        void onSuccess(@Nullable final T model);
-    }
-
     public interface CallbackCollection<T extends Model> extends Fallible {
         void onSuccess(List<T> models);
     }

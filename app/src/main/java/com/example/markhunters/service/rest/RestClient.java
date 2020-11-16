@@ -325,15 +325,23 @@ public class RestClient {
         this.httpclient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                callback.onSuccess(null);
-                // callback.onFailure(e.getMessage());
+                callback.onFailure(e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    doSomething(response);
+                    try {
+                        JSONObject userJson = new JSONObject(response.body().string());
+                        UserModel user = UserModel.fromJson(userJson);
+                        callback.onSuccess(user);
+                    } catch (JSONException e) {
+                        callback.onFailure(e.getMessage());
+                    }
                 } else {
+                    if (response.code() == 404) {
+                        callback.onSuccess(null);
+                    }
                     callback.onFailure(response.message());
                 }
             }
@@ -352,18 +360,7 @@ public class RestClient {
         this.httpclient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                try {
-                    JSONObject jsonObject = new JSONObject("{\n" +
-                            "        \"uid\": \"uid1234uid1234\",\n" +
-                            "        \"username\": \"Nei\",\n" +
-                            "        \"email\": \"nei@gmail.com\"\n" +
-                            "        }");
-                    UserModel userModel = UserModel.fromJson(jsonObject);
-                    callback.onSuccess(userModel);
-                } catch (JSONException ex) {
-                    ex.printStackTrace();
-                }
-                // callback.onFailure(e.getMessage());
+                callback.onFailure(e.getMessage());
             }
 
             @Override

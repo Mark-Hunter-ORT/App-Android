@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,7 +18,6 @@ import com.example.markhunters.fragments.MapFragment;
 import com.example.markhunters.fragments.MarkFragment;
 import com.example.markhunters.fragments.ProfileFragment;
 import com.example.markhunters.model.UserModel;
-import com.example.markhunters.service.ServiceProvider;
 import com.example.markhunters.service.rest.RestClient;
 import com.google.android.material.navigation.NavigationView;
 
@@ -29,10 +27,9 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
     public static final String USER_MODEL = "user_model";
     private DrawerLayout drawer;
     private UserModel user;
-    private RestClient restClient;
 
     public RestClient getClient() {
-        return this.restClient;
+        return restClient;
     }
 
     @Override
@@ -40,7 +37,6 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         setDataOnView();
-        restClient = ServiceProvider.getRestClient(user.getToken());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -48,10 +44,8 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         TextView mName = navigationView.getHeaderView(0).findViewById(R.id.textViewName);
-        if (user.getPhotoStringUri() != null && user.getDisplayName() != null) {
-            ImageView mPic = navigationView.getHeaderView(0).findViewById(R.id.imageView);
+        if (user.getDisplayName() != null) {
             mName.setText(user.getDisplayName());
-            mPic.setImageURI(user.getPhotoUri());
         }
 
 
@@ -104,9 +98,5 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
 
     public void goToFragment(@NotNull MarkFragment fragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-    }
-
-    @NotNull public UserModel getUser() {
-        return user;
     }
 }
