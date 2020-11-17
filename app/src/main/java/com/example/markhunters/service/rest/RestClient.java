@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import android.location.Location;
 import android.util.Log;
 
+import com.example.markhunters.fragments.MarkCreationFragment;
 import com.example.markhunters.model.Category;
 import com.example.markhunters.model.MarkLocation;
 import com.example.markhunters.model.Mark;
@@ -279,10 +280,10 @@ public class RestClient {
 
             @Override
             public void onResponse(Call call, Response response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     callback.onSuccess();
                 } else {
-                    callback.onFailure(response.message());
+                    callback.onError(response.message(), response.code());
                 }
             }
         });
@@ -339,11 +340,7 @@ public class RestClient {
                         callback.onFailure(e.getMessage());
                     }
                 } else {
-                    if (response.code() == 404) {
-                        callback.onSuccess(null);
-                    } else {
-                        callback.onFailure(response.message());
-                    }
+                    callback.onError(response.message(), response.code());
                 }
             }
         });

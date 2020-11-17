@@ -94,6 +94,15 @@ public class SignInActivity extends UserActivity {
                     loadingDialog.dismiss();
                     finish();
                 }
+
+                @Override
+                public void onError(@Nullable String message, int code) {
+                    if (code == 404) {
+                        onSuccess(null);
+                    } else {
+                        onFailure(message);
+                    }
+                }
             });
         });
     }

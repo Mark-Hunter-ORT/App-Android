@@ -31,6 +31,7 @@ import static com.example.markhunters.service.image.ImageUtils.toBase64;
 
 public class MarkCreationFragment extends MarkFragment
 {
+    public static final String POSITION_ALREADY_USED = "Ya existe un Mark en esta posición";
     private ImageView mImageView;
     private EditText markTagText;
     private Bitmap mBitmap = null;
@@ -66,13 +67,24 @@ public class MarkCreationFragment extends MarkFragment
                 getClient().postMark(mark, new RestClientCallbacks.CallbackAction() {
                     @Override
                     public void onFailure(@Nullable String message) {
-                        activity.runOnUiThread(() -> Toast.makeText(context, "Ocurrió un error guardando el Mark", Toast.LENGTH_SHORT).show());
+                        activity.runOnUiThread(() -> Toast.makeText(context, "Ocurrió un error guardando el Mark", Toast.LENGTH_LONG).show());
+                        goToFragment(new MapFragment());
                         loadingDialog.dismiss();
                     }
                     @Override
                     public void onSuccess() {
                         goToFragment(new MapFragment());
                         loadingDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onError(@Nullable String message, int code) {
+                        if (code != 400) onFailure(message);
+                        else {
+                            activity.runOnUiThread(() -> Toast.makeText(context, POSITION_ALREADY_USED, Toast.LENGTH_LONG).show());
+                            goToFragment(new MapFragment());
+                            loadingDialog.dismiss();
+                        }
                     }
                 });
             }

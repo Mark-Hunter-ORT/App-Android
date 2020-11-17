@@ -19,9 +19,10 @@ public class RestClientCallbacks {
     public interface CallbackAction extends Fallible {
         void onSuccess();
     }
-    
+
     public interface Fallible {
-        void onFailure(@Nullable String message); 
+        void onFailure(@Nullable String message);
+        default void onError (@Nullable String message, int code) {}
     }
 
 }
