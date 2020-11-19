@@ -7,13 +7,14 @@
     android:background="#FFC60A06"
     tools:context=".activities.IntroActivity">
 
+
     <ImageView
         android:id="@+id/cameraView"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
-        android:background="@drawable/ic_mark_hunters_logo_no_bckg"
-        android:backgroundTint="#FFC60A06"
-        android:backgroundTintMode="screen"
-        android:layout_centerInParent="true"/>
+        android:layout_width="408dp"
+        android:layout_height="648dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/ic_pruebab"
+        android:backgroundTint="#009688"
+        android:backgroundTintMode="screen" />
 
 </RelativeLayout>
