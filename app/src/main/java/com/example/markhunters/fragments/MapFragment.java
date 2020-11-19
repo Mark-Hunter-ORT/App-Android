@@ -25,6 +25,7 @@ import com.example.markhunters.model.GPSLocation;
 import com.example.markhunters.model.Mark;
 import com.example.markhunters.model.MarkLocation;
 import com.example.markhunters.service.rest.RestClientCallbacks;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -212,6 +213,9 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
                 LocationListener locationListener = new MarkLocationListener();
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1,
                         1, locationListener);
+                float zoomLevel = 16.0f;
+                final LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
             }
         }
     }
