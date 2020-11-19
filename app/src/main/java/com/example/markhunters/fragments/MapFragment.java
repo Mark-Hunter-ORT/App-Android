@@ -221,6 +221,7 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 initLocationServices();
+                refreshMarks();
             } else {
                 Toast.makeText(context, "Permiso de ubicación no habilitado", Toast.LENGTH_LONG).show();
             }
