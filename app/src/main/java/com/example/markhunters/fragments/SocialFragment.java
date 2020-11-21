@@ -55,7 +55,7 @@ public class SocialFragment extends MarkFragment {
         final ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(activity.getSupportFragmentManager(), 0);
         viewPagerAdapter.addFragment(new ProfileFragment(user));
         viewPagerAdapter.addFragment(new FollowingFragment(user));
-        viewPager.setAdapter(viewPagerAdapter);
+        activity.runOnUiThread(() -> viewPager.setAdapter(viewPagerAdapter));
 
     }
 

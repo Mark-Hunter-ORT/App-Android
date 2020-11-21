@@ -27,6 +27,7 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
     public static final String USER_MODEL = "user_model";
     private DrawerLayout drawer;
     private UserModel user;
+    private NavigationView navigationView;
 
     public RestClient getClient() {
         return restClient;
@@ -41,7 +42,7 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         TextView mName = navigationView.getHeaderView(0).findViewById(R.id.textViewName);
         if (user.getDisplayName() != null) {
@@ -97,6 +98,8 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
     }
 
     public void goToFragment(@NotNull MarkFragment fragment) {
+        MenuItem checkedItem = navigationView.getCheckedItem();
+        if (checkedItem != null) checkedItem.setChecked(false);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
     }
 

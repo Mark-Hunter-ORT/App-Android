@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserModel extends Model {
+    private final String uid;
     private String nickname;
     private String email;
     private String displayName;
@@ -28,6 +29,7 @@ public class UserModel extends Model {
     }
 
     public UserModel(@NotNull final String nickname, @NotNull final String email) {
+        uid = "1";
         this.nickname = nickname;
         this.email = email;
         followings = new ArrayList<>();
@@ -41,7 +43,7 @@ public class UserModel extends Model {
         followings.add("3");
     }
 
-    public void addFollowing(String uid){
+    public void addFollowing(String uid) {
         this.followings.add(uid);
     }
 
@@ -74,7 +76,6 @@ public class UserModel extends Model {
         }
         return user;
     }
-
 
     public int getFollowers() {
         return followers;
