@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +23,8 @@ public class MarkViewFragment extends MarkFragment {
     private final String markId;
     private ImageView mImageView;
     private TextView mTextView;
+    private String authorId;
+    private String authorName;
 
     public MarkViewFragment(@NotNull final String markId) {
         this.markId = markId;
@@ -51,7 +52,37 @@ public class MarkViewFragment extends MarkFragment {
                 String imageUrl = mark.content.images.get(0);
                 new ImageUtils.DownloadImageTask(mImageView).execute(imageUrl);
                 mTextView.setText(mark.getTitle());
+                authorId = mark.userId;
+                authorName = "mark.userName";
                 loadingDialog.dismiss();
+            }
+        });
+
+        root.findViewById(R.id.followBtn).setOnClickListener(view -> {
+            if (authorId != null) {
+                loadingDialog.start();
+                getClient().followUser(authorId, new RestClientCallbacks.CallbackAction() {
+                   @Override
+                   public void onSuccess() {
+                       // tengo que hacer esto para que el mapa me muestre los marks de mis seguidores
+                       // Puede ser asincrónico, y hasta quizás cacheado.
+                       addFollowed(authorId, authorName); //todo esto no va a hacer falta cuando esté el restclient
+                       activity.runOnUiThread(() -> toast("Siguiendo nuevo usuario!"));
+                       backToMap();
+                   }
+
+                    @Override
+                   public void onFailure(@Nullable String message) {
+                       System.out.println(message);
+                       activity.runOnUiThread(() -> toast("Ocurrió un error intentando seguir al usuario"));
+                       backToMap();
+                    }
+
+                    private void backToMap() {
+                        loadingDialog.dismiss();
+                        goToFragment(new MapFragment());
+                    }
+                });
             }
         });
 

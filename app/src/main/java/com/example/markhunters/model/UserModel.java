@@ -16,6 +16,7 @@ public class UserModel extends Model {
     private String email;
     private String displayName;
     private List<String> followings;
+    private int followers;
 
     public void setFirebaseData(FirebaseUser firebaseUser) {
         this.displayName = firebaseUser.getDisplayName();
@@ -26,10 +27,18 @@ public class UserModel extends Model {
         return new JSONObject();
     }
 
-    private UserModel(@NotNull final String nickname, @NotNull final String email) {
+    public UserModel(@NotNull final String nickname, @NotNull final String email) {
         this.nickname = nickname;
         this.email = email;
-        this.followings = new ArrayList<>();
+        followings = new ArrayList<>();
+        followers = 10;
+        mockFollowing();
+    }
+
+    private void mockFollowing() {
+        followings.add("1");
+        followings.add("2");
+        followings.add("3");
     }
 
     public void addFollowing(String uid){
@@ -64,5 +73,18 @@ public class UserModel extends Model {
             e.printStackTrace();
         }
         return user;
+    }
+
+
+    public int getFollowers() {
+        return followers;
+    }
+
+    public List<String> getFollowing() {
+        return followings;
+    }
+
+    public void removeFollowing(String id) {
+        followings.remove(id);
     }
 }

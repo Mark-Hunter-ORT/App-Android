@@ -4,9 +4,11 @@ import android.content.Context;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.markhunters.activities.MenuActivity;
+import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.rest.RestClient;
 
 import org.jetbrains.annotations.NotNull;
@@ -40,5 +42,13 @@ public class MarkFragment extends Fragment {
 
     protected void toast(@NotNull final String message) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+    }
+
+    protected UserModel getUser() {
+        return activity.getUser();
+    }
+
+    protected void refreshUser(@NotNull UserModel user) {
+        activity.setUser(user);
     }
 }
