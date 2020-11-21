@@ -15,14 +15,16 @@ public class Mark extends Model {
     public String category;
     public MarkLocation location;
     public Content content;
+    public Boolean isByFollowed;
 
     // Este es el mark que viene del server
-    public Mark(String userId, String category, MarkLocation location, Content content, Integer id){
+    public Mark(String userId, String category, MarkLocation location, Content content, Integer id, Boolean isByFollowed){
         this.userId = userId;
         this.category = category;
         this.location = location;
         this.content = content;
         this.id = id;
+        this.isByFollowed = isByFollowed;
     }
 
     public JSONObject toJson(){
@@ -67,7 +69,7 @@ public class Mark extends Model {
                     MarkLocation.fromJson(json.getJSONObject("location")),
                     new Content(json.getJSONObject("content").getString("text"),
                             images),
-                    json.getInt("id"));
+                    json.getInt("id"), json.getBoolean("by_followed"));
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
