@@ -46,17 +46,17 @@ public class MarkCreationFragment extends MarkFragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_mark_creation, container, false);
-        Button uploadButton = rootView.findViewById(R.id.saveMarkButton);
+        Button uploadButton = rootView.findViewById(R.id.confirm);
         mImageView = rootView.findViewById(R.id.cameraView);
         markTagText = rootView.findViewById(R.id.markTagEditText);
 
         // 'take a picture' button action
-        rootView.findViewById(R.id.takePictureBtn).setOnClickListener(view -> {
+        rootView.findViewById(R.id.cameraView).setOnClickListener(view -> {
             Intent intent = new Intent (MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(intent, CAMERA_REQUEST_CODE);
         });
 
-        rootView.findViewById(R.id.cancelMarkButton).setOnClickListener(view -> goToFragment(new MapFragment()));
+        rootView.findViewById(R.id.cancel).setOnClickListener(view -> goToFragment(new MapFragment()));
 
         // 'upload' button action.
         uploadButton.setOnClickListener(view -> {

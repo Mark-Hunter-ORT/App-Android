@@ -16,7 +16,7 @@
         android:layout_marginStart="142dp"
         android:layout_marginTop="244dp"
         android:fontFamily="@font/baloo_thambi"
-        android:text="@string/Brandname"
+        android:text="@string/BrandName"
         android:textColor="#FFFCFC"
         android:textSize="36sp" />
 </RelativeLayout>

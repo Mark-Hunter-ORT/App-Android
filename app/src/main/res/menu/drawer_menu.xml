@@ -16,7 +16,7 @@
         <menu>
             <item
                 android:id="@+id/signout"
-                android:icon="@drawable/ic_exit"
+                android:icon="@drawable/ic_baseline_person_add_24"
                 android:title="@string/signout" />
         </menu>
     </item>

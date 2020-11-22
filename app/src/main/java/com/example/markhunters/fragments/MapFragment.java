@@ -85,10 +85,10 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         if (!permissionsAllowed()) {
             requestPermissions(new String[]{ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         }
-        Button addMarkButton = root.findViewById(R.id.addMarkButton);
+        Button addMarkButton = root.findViewById(R.id.addMarkIcon);
         addMarkButton.setOnClickListener(new MarkButtonListener());
 
-        Button refreshButton = root.findViewById(R.id.refreshMarksButton);
+        Button refreshButton = root.findViewById(R.id.refreshMarksIcon);
         refreshButton.setOnClickListener(view -> refreshMarks());
         return root;
     }
