@@ -12,14 +12,16 @@ import java.util.List;
 public class Mark extends Model {
     public Integer id;
     public String userId;
+    public String userName;
     public String category;
     public MarkLocation location;
     public Content content;
     public Boolean isByFollowed;
 
     // Este es el mark que viene del server
-    public Mark(String userId, String category, MarkLocation location, Content content, Integer id, Boolean isByFollowed){
+    public Mark(String userId, String category, MarkLocation location, Content content, Integer id, Boolean isByFollowed, String userName){
         this.userId = userId;
+        this.userName = userName;
         this.category = category;
         this.location = location;
         this.content = content;
@@ -69,7 +71,8 @@ public class Mark extends Model {
                     MarkLocation.fromJson(json.getJSONObject("location")),
                     new Content(json.getJSONObject("content").getString("text"),
                             images),
-                    json.getInt("id"), json.getBoolean("by_followed"));
+                    json.getInt("id"), json.getBoolean("by_followed"),
+                    json.getString("username"));
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
