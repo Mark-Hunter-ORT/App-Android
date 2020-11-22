@@ -4,17 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFC60A06"
+    android:background="#2196F3"
     tools:context=".activities.IntroActivity">
 
-
-    <ImageView
-        android:id="@+id/cameraView"
-        android:layout_width="408dp"
-        android:layout_height="648dp"
-        android:layout_centerInParent="true"
-        android:background="@drawable/ic_pruebab"
-        android:backgroundTint="#009688"
-        android:backgroundTintMode="screen" />
-
+    <TextView
+        android:id="@+id/BrandText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="142dp"
+        android:layout_marginTop="244dp"
+        android:fontFamily="@font/baloo_thambi"
+        android:text="@string/Brandname"
+        android:textColor="#FFFCFC"
+        android:textSize="36sp" />
 </RelativeLayout>

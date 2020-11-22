@@ -15,6 +15,7 @@ public class Mark extends Model {
     public String category;
     public MarkLocation location;
     public Content content;
+    public Object codigo;
 
     // Este es el mark que viene del server
     public Mark(String userId, String category, MarkLocation location, Content content, Integer id){
