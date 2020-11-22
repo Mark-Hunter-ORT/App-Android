@@ -9,6 +9,7 @@ import com.example.markhunters.fragments.MarkCreationFragment;
 import com.example.markhunters.model.Category;
 import com.example.markhunters.model.MarkLocation;
 import com.example.markhunters.model.Mark;
+import com.example.markhunters.model.UserFollowing;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.rest.RestClientCallbacks.CallbackAction;
 import com.example.markhunters.service.rest.RestClientCallbacks.CallbackCollection;
@@ -42,6 +43,7 @@ public class RestClient {
     private final String MARKS_DISTANCE = "api/mark/<lat>/<lon>/<distance>/";
     private final String USER = "api/user/<id>/";
     private final String USER_POST = "api/user/";
+    private final String USER_FOLLOWINGS = "api/user/followings/";
     private final String USER_FOLLOW = "api/user/<id>/follow/";
     private final String USER_UNFOLLOW = "api/user/<id>/unfollow/";
     private final MediaType MEDIA = MediaType.parse("application/json; charset=utf-8");
@@ -420,6 +422,35 @@ public class RestClient {
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()) {
                     doSomething(response);
+                } else {
+                    callback.onFailure(response.message());
+                }
+            }
+        });
+    }
+
+    public void getFollowings(CallbackCollection<UserFollowing> callback){
+        String url = this.SERVER_FQDN + this.USER_FOLLOWINGS;
+        final Request request = new Request.Builder()
+                .url(url)
+                .addHeader("User-Token", this.token)
+                .build();
+        this.httpclient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                callback.onFailure(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()) {
+                    try {
+                        JSONArray jsonArray = new JSONArray(response.body().string());
+                        List<UserFollowing> followings = UserFollowing.fromJsonArray(jsonArray);
+                        callback.onSuccess(followings);
+                    } catch (JSONException e) {
+                        callback.onFailure(e.getMessage());
+                    }
                 } else {
                     callback.onFailure(response.message());
                 }
