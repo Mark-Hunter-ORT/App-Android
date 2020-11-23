@@ -15,7 +15,7 @@ public class UserModel extends Model {
     private String nickname;
     private String email;
     private String displayName;
-    private List<String> followings;
+    private List<String> followers;
 
     public void setFirebaseData(FirebaseUser firebaseUser) {
         this.displayName = firebaseUser.getDisplayName();
@@ -29,18 +29,11 @@ public class UserModel extends Model {
     public UserModel(@NotNull final String nickname, @NotNull final String email) {
         this.nickname = nickname;
         this.email = email;
-        followings = new ArrayList<>();
-        mockFollowing();
+        followers = new ArrayList<>();
     }
 
-    private void mockFollowing() {
-        followings.add("1");
-        followings.add("2");
-        followings.add("3");
-    }
-
-    public void addFollowing(String uid) {
-        this.followings.add(uid);
+    public void addFollower(String uid) {
+        this.followers.add(uid);
     }
 
     @NotNull
@@ -62,9 +55,9 @@ public class UserModel extends Model {
         try {
             user = new UserModel(json.getString("username"),
                     json.getString("email"));
-            JSONArray userFollowings = json.getJSONArray("following");
-            for (int i = 0; i < userFollowings.length(); i ++) {
-                user.addFollowing(userFollowings.getString(i));
+            JSONArray userFollowers = json.getJSONArray("followers");
+            for (int i = 0; i < userFollowers.length(); i ++) {
+                user.addFollower(userFollowers.getString(i));
             }
         } catch (JSONException e) {
             // TODO Auto-generated catch block
@@ -73,11 +66,8 @@ public class UserModel extends Model {
         return user;
     }
 
+    // por ahora solo nos interesa saber cuantos tiene
     public int getFollowers() {
-        return followings.size();
-    }
-
-    public void removeFollowing(String id) {
-        followings.remove(id);
+        return followers.size();
     }
 }

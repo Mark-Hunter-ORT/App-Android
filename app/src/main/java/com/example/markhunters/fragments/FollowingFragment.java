@@ -16,19 +16,22 @@ import androidx.fragment.app.Fragment;
 
 import com.example.markhunters.R;
 import com.example.markhunters.model.UserFollowing;
-import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.rest.RestClientCallbacks;
 import com.example.markhunters.ui.LoadingDialog;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FollowingFragment extends MarkFragment implements TabableFragment {
 
-    private final UserModel user;
+    private boolean fetched;
     private TableLayout table;
+    private List<UserFollowing> userFollowings; // en memoria
 
-    public FollowingFragment(UserModel user) {
-        this.user = user;
+    public FollowingFragment() {
+        userFollowings = new ArrayList<>();
+        fetched = false;
     }
 
     @Override
@@ -36,38 +39,21 @@ public class FollowingFragment extends MarkFragment implements TabableFragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_following, container, false);
         table = root.findViewById(R.id.followingTable);
-        populateTable();
         return root;
     }
 
     private void populateTable() {
-        table.removeAllViews();
-        LoadingDialog loadingDialog = new LoadingDialog(activity);
-        loadingDialog.start();
-        getClient().getFollowings(new RestClientCallbacks.CallbackCollection<UserFollowing>() {
-            @Override
-            public void onFailure(@Nullable String message) {
-                System.out.println(message);
-                activity.runOnUiThread(() -> toast("Ocurrió un error obteniendo los usuarios seguidos"));
-                loadingDialog.dismiss();
-            }
-
-            @Override
-            public void onSuccess(List<UserFollowing> followings) {
-                activity.runOnUiThread(() -> {
-                    followings.forEach(uf -> {
-                        TableRow tableRow = new TableRow(context);
-                        TextView nameCell = buildCell(uf.getUsername());
-                        tableRow.addView(nameCell);
-                        Button unfollowBtn = buildUnfollowBtn(uf.getUid(), uf.getUsername());
-                        tableRow.addView(unfollowBtn);
-                        table.addView(tableRow);
-                    });
-                    loadingDialog.dismiss();
-                });
-            }
+        activity.runOnUiThread(() -> {
+            table.removeAllViews();
+            userFollowings.forEach(uf -> {
+                TableRow tableRow = new TableRow(context);
+                TextView nameCell = buildCell(uf.getUsername());
+                tableRow.addView(nameCell);
+                Button unfollowBtn = buildUnfollowBtn(uf.getUid(), uf.getUsername());
+                tableRow.addView(unfollowBtn);
+                table.addView(tableRow);
+            });
         });
-
     }
 
     private Button buildUnfollowBtn(String id, String name) {
@@ -84,7 +70,11 @@ public class FollowingFragment extends MarkFragment implements TabableFragment {
                         getClient().unfollowUser(id, new RestClientCallbacks.CallbackAction() {
                             @Override
                             public void onSuccess() {
-                                activity.runOnUiThread(() -> populateTable());
+                                activity.runOnUiThread(() -> {
+                                    userFollowings = userFollowings.stream().filter(uf -> !uf.getUid().equals(id)).collect(Collectors.toList());
+                                    activity.runOnUiThread(() -> toast("Has dejado de seguir a " + name));
+                                    populateTable();
+                                });
                                 loadingDialog.dismiss();
                             }
                             @Override
@@ -129,5 +119,31 @@ public class FollowingFragment extends MarkFragment implements TabableFragment {
     @Override
     public Fragment getFragment() {
         return this;
+    }
+
+    @Override
+    public void refresh() {
+        if (!fetched) {
+            LoadingDialog loadingDialog = new LoadingDialog(activity);
+            loadingDialog.start();
+            getClient().getFollowings(new RestClientCallbacks.CallbackCollection<UserFollowing>() {
+                @Override
+                public void onFailure(@Nullable String message) {
+                    System.out.println(message);
+                    activity.runOnUiThread(() -> toast("Ocurrió un error obteniendo los usuarios seguidos"));
+                    loadingDialog.dismiss();
+                }
+
+                @Override
+                public void onSuccess(List<UserFollowing> followings) {
+                    activity.runOnUiThread(() -> {
+                        userFollowings = followings;
+                        loadingDialog.dismiss();
+                        populateTable();
+                    });
+                }
+            });
+            fetched = true;
+        }
     }
 }

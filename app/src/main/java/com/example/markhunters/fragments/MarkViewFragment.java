@@ -26,6 +26,7 @@ public class MarkViewFragment extends MarkFragment {
     private TextView mTextView;
     private TextView authorTextView;
     private String authorId;
+    private String authorName;
     private boolean isByFollowed;
 
     public MarkViewFragment(@NotNull final String markId) {
@@ -57,8 +58,9 @@ public class MarkViewFragment extends MarkFragment {
                     String imageUrl = mark.content.images.get(0);
                     new ImageUtils.DownloadImageTask(mImageView).execute(imageUrl);
                     mTextView.setText(mark.getTitle());
-                    ;authorTextView.setText("Autor: " + mark.userName);
+                    authorTextView.setText("Autor: " + mark.userName);
                     authorId = mark.userId;
+                    authorName = mark.userName;
                     isByFollowed = mark.isByFollowed;
                     resolveFollowButton(root);
                     loadingDialog.dismiss();
@@ -81,7 +83,7 @@ public class MarkViewFragment extends MarkFragment {
                     getClient().followUser(authorId, new RestClientCallbacks.CallbackAction() {
                         @Override
                         public void onSuccess() {
-                            activity.runOnUiThread(() -> toast("Siguiendo nuevo usuario!"));
+                            activity.runOnUiThread(() -> toast("Empezaste a seguir a " + authorName));
                             backToMap();
                         }
 

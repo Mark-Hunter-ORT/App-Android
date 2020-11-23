@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -15,9 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.markhunters.R;
-import com.example.markhunters.model.UserModel;
-import com.example.markhunters.service.rest.RestClientCallbacks;
-import com.example.markhunters.ui.LoadingDialog;
 import com.google.android.material.tabs.TabLayout;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,37 +26,38 @@ public class SocialFragment extends MarkFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_social, container, false);
-        LoadingDialog loadingDialog = new LoadingDialog(activity);
-        loadingDialog.start();
-        getClient().getUser("uid", new RestClientCallbacks.CallbackInstance<UserModel>() {
-            @Override
-            public void onSuccess(@Nullable UserModel user) {
-                if (user != null) refreshUser(user);
-                populateFragments(root);
-                loadingDialog.dismiss();
-            }
-
-            @Override
-            public void onFailure(@Nullable String message) {
-                System.out.println(message);
-                activity.runOnUiThread(() ->  toast("Ocurrió un error actualizando los datos del usuario"));
-                populateFragments(root);
-                loadingDialog.dismiss();
-            }
-        });
+        populateFragments(root);
         return root;
     }
 
     private void populateFragments(View root) {
-        final UserModel user = getUser();
         TabLayout tabs = root.findViewById(R.id.social_tab);
         ViewPager viewPager = root.findViewById(R.id.tab_view_pager);
         tabs.setupWithViewPager(viewPager);
-
         final ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(activity.getSupportFragmentManager(), 0);
-        viewPagerAdapter.addFragment(new ProfileFragment(user));
-        viewPagerAdapter.addFragment(new FollowingFragment(user));
-        activity.runOnUiThread(() -> viewPager.setAdapter(viewPagerAdapter));
+        viewPagerAdapter.addFragment(new ProfileFragment());
+        viewPagerAdapter.addFragment(new FollowingFragment());
+        activity.runOnUiThread(() -> {
+            viewPager.setAdapter(viewPagerAdapter);
+            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                    TabableFragment item = viewPagerAdapter.getItemTabable(position);
+                    item.refresh();
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    TabableFragment item = viewPagerAdapter.getItemTabable(position);
+                    item.refresh();
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {}
+            });
+
+         });
+
     }
 
     private static class ViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -80,6 +77,12 @@ public class SocialFragment extends MarkFragment {
         public Fragment getItem(int position) {
             return fragments.get(position).getFragment();
         }
+
+        @NonNull
+        public TabableFragment getItemTabable(int position) {
+            return fragments.get(position);
+        }
+
 
         @Override
         public int getCount() {
