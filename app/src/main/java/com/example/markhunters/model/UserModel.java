@@ -12,12 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserModel extends Model {
-    private final String uid;
     private String nickname;
     private String email;
     private String displayName;
     private List<String> followings;
-    private int followers;
 
     public void setFirebaseData(FirebaseUser firebaseUser) {
         this.displayName = firebaseUser.getDisplayName();
@@ -29,11 +27,9 @@ public class UserModel extends Model {
     }
 
     public UserModel(@NotNull final String nickname, @NotNull final String email) {
-        uid = "1";
         this.nickname = nickname;
         this.email = email;
         followings = new ArrayList<>();
-        followers = 10;
         mockFollowing();
     }
 
@@ -78,11 +74,7 @@ public class UserModel extends Model {
     }
 
     public int getFollowers() {
-        return followers;
-    }
-
-    public List<String> getFollowing() {
-        return followings;
+        return followings.size();
     }
 
     public void removeFollowing(String id) {

@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.example.markhunters.R;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.rest.RestClientCallbacks;
+import com.example.markhunters.ui.LoadingDialog;
 import com.google.android.material.tabs.TabLayout;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,11 +30,14 @@ public class SocialFragment extends MarkFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_social, container, false);
+        LoadingDialog loadingDialog = new LoadingDialog(activity);
+        loadingDialog.start();
         getClient().getUser("uid", new RestClientCallbacks.CallbackInstance<UserModel>() {
             @Override
             public void onSuccess(@Nullable UserModel user) {
                 if (user != null) refreshUser(user);
                 populateFragments(root);
+                loadingDialog.dismiss();
             }
 
             @Override
@@ -41,6 +45,7 @@ public class SocialFragment extends MarkFragment {
                 System.out.println(message);
                 activity.runOnUiThread(() ->  toast("Ocurrió un error actualizando los datos del usuario"));
                 populateFragments(root);
+                loadingDialog.dismiss();
             }
         });
         return root;
@@ -56,7 +61,6 @@ public class SocialFragment extends MarkFragment {
         viewPagerAdapter.addFragment(new ProfileFragment(user));
         viewPagerAdapter.addFragment(new FollowingFragment(user));
         activity.runOnUiThread(() -> viewPager.setAdapter(viewPagerAdapter));
-
     }
 
     private static class ViewPagerAdapter extends FragmentStatePagerAdapter {

@@ -15,11 +15,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.markhunters.R;
+import com.example.markhunters.model.UserFollowing;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.rest.RestClientCallbacks;
 import com.example.markhunters.ui.LoadingDialog;
 
-import java.util.Map;
+import java.util.List;
 
 public class FollowingFragment extends MarkFragment implements TabableFragment {
 
@@ -41,15 +42,32 @@ public class FollowingFragment extends MarkFragment implements TabableFragment {
 
     private void populateTable() {
         table.removeAllViews();
-        final Map<String, String> following = user.getFollowing();
-        following.forEach((id, name) -> {
-            TableRow tableRow = new TableRow(context);
-            TextView nameCell = buildCell(name);
-            tableRow.addView(nameCell);
-            Button unfollowBtn = buildUnfollowBtn(id, name);
-            tableRow.addView(unfollowBtn);
-            table.addView(tableRow);
+        LoadingDialog loadingDialog = new LoadingDialog(activity);
+        loadingDialog.start();
+        getClient().getFollowings(new RestClientCallbacks.CallbackCollection<UserFollowing>() {
+            @Override
+            public void onFailure(@Nullable String message) {
+                System.out.println(message);
+                activity.runOnUiThread(() -> toast("Ocurrió un error obteniendo los usuarios seguidos"));
+                loadingDialog.dismiss();
+            }
+
+            @Override
+            public void onSuccess(List<UserFollowing> followings) {
+                activity.runOnUiThread(() -> {
+                    followings.forEach(uf -> {
+                        TableRow tableRow = new TableRow(context);
+                        TextView nameCell = buildCell(uf.getUsername());
+                        tableRow.addView(nameCell);
+                        Button unfollowBtn = buildUnfollowBtn(uf.getUid(), uf.getUsername());
+                        tableRow.addView(unfollowBtn);
+                        table.addView(tableRow);
+                    });
+                    loadingDialog.dismiss();
+                });
+            }
         });
+
     }
 
     private Button buildUnfollowBtn(String id, String name) {
@@ -66,11 +84,9 @@ public class FollowingFragment extends MarkFragment implements TabableFragment {
                         getClient().unfollowUser(id, new RestClientCallbacks.CallbackAction() {
                             @Override
                             public void onSuccess() {
-                                user.removeFollowing(id);
                                 activity.runOnUiThread(() -> populateTable());
                                 loadingDialog.dismiss();
                             }
-
                             @Override
                             public void onFailure(@Nullable String message) {
                                 System.out.println(message);

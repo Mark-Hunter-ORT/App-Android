@@ -65,7 +65,7 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
             getClient().getMarksByDistance(currentLocation, MAX_FETCH_DISTANCE, new RestClientCallbacks.CallbackCollection<Mark>() {
                 @Override
                 public void onSuccess(List<Mark> marks) {
-                    activity.runOnUiThread(() -> marks.forEach(m -> addMarker(m.getLatLng(), m.getTitle(), m.id, m.id % 2 != 0)));
+                    activity.runOnUiThread(() -> marks.forEach(m -> addMarker(m.getLatLng(), m.getTitle(), m.id, m.isByFollowed)));
                 }
 
                 @Override
