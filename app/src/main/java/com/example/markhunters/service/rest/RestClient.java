@@ -382,7 +382,7 @@ public class RestClient {
 
     public void followUser(String id, CallbackAction callback) {
         RequestBody reqbody = RequestBody.create(null, new byte[0]);
-        String url = this.SERVER_FQDN + this.USER.replace("<id>", id);
+        String url = this.SERVER_FQDN + this.USER_FOLLOW.replace("<id>", id);
         final Request request = new Request.Builder()
                 .url(url)
                 .post(reqbody)
@@ -397,7 +397,7 @@ public class RestClient {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()) {
-                    doSomething(response);
+                    callback.onSuccess();
                 } else {
                     callback.onFailure(response.message());
                 }
@@ -406,7 +406,7 @@ public class RestClient {
     }
 
     public void unfollowUser(String id, CallbackAction callback) {
-        String url = this.SERVER_FQDN + this.USER.replace("<id>", id);
+        String url = this.SERVER_FQDN + this.USER_UNFOLLOW.replace("<id>", id);
         final Request request = new Request.Builder()
                 .url(url)
                 .delete()
@@ -421,7 +421,7 @@ public class RestClient {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()) {
-                    doSomething(response);
+                    callback.onSuccess();
                 } else {
                     callback.onFailure(response.message());
                 }
@@ -453,6 +453,34 @@ public class RestClient {
                     }
                 } else {
                     callback.onFailure(response.message());
+                }
+            }
+        });
+    }
+    public void getMyUser(CallbackInstance<UserModel> callback) {
+        String url = this.SERVER_FQDN + this.USER_POST;
+        final Request request = new Request.Builder()
+                .url(url)
+                .addHeader("User-Token", this.token)
+                .build();
+        this.httpclient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                callback.onFailure(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject userJson = new JSONObject(response.body().string());
+                        UserModel user = UserModel.fromJson(userJson);
+                        callback.onSuccess(user);
+                    } catch (JSONException e) {
+                        callback.onFailure(e.getMessage());
+                    }
+                } else {
+                    callback.onError(response.message(), response.code());
                 }
             }
         });

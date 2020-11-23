@@ -16,7 +16,7 @@ import com.example.markhunters.R;
 import com.example.markhunters.activities.signin.UserActivity;
 import com.example.markhunters.fragments.MapFragment;
 import com.example.markhunters.fragments.MarkFragment;
-import com.example.markhunters.fragments.ProfileFragment;
+import com.example.markhunters.fragments.SocialFragment;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.rest.RestClient;
 import com.google.android.material.navigation.NavigationView;
@@ -27,6 +27,7 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
     public static final String USER_MODEL = "user_model";
     private DrawerLayout drawer;
     private UserModel user;
+    private NavigationView navigationView;
 
     public RestClient getClient() {
         return restClient;
@@ -41,7 +42,7 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         TextView mName = navigationView.getHeaderView(0).findViewById(R.id.textViewName);
         if (user.getDisplayName() != null) {
@@ -81,7 +82,7 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
     private void navigate(int itemId) {
         switch (itemId) {
             case R.id.profile:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment(user)).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SocialFragment()).commit();
                 break;
             case R.id.menu_map:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MapFragment()).commit();
@@ -97,6 +98,16 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
     }
 
     public void goToFragment(@NotNull MarkFragment fragment) {
+        MenuItem checkedItem = navigationView.getCheckedItem();
+        if (checkedItem != null) checkedItem.setChecked(false);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+    }
+
+    public UserModel getUser() {
+        return user;
+    }
+
+    public void setUser(UserModel user) {
+        this.user = user;
     }
 }

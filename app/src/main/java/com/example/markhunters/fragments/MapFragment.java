@@ -45,16 +45,14 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class MapFragment extends MarkFragment implements OnMapReadyCallback {
-    private final float  MAX_DISTANCE_ENABLED = 50; // metros
-    private final float  MAX_DISTANCE_DISABLED_NEAR = 500; // metros
+    private final float MAX_DISTANCE_ENABLED = 50f; // metros
     private final double MAX_FETCH_DISTANCE = 1000.4; // metros
     MapView mapView = null;
     GoogleMap map;
     private Location currentLocation;
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1252;
-    private BitmapDescriptor icon_enabled = null;
-    private BitmapDescriptor icon_disabled_near = null;
-    private BitmapDescriptor icon_disabled_far = null;
+    private BitmapDescriptor icon_default = null;
+    private BitmapDescriptor icon_followed = null;
 
     public MapFragment () {
         super();
@@ -67,7 +65,7 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
             getClient().getMarksByDistance(currentLocation, MAX_FETCH_DISTANCE, new RestClientCallbacks.CallbackCollection<Mark>() {
                 @Override
                 public void onSuccess(List<Mark> marks) {
-                    activity.runOnUiThread(() -> marks.forEach(m -> addMarker(m.getLatLng(), m.getTitle(), m.id)));
+                    activity.runOnUiThread(() -> marks.forEach(m -> addMarker(m.getLatLng(), m.getTitle(), m.id, m.isByFollowed)));
                 }
 
                 @Override
@@ -108,6 +106,7 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean permissionsAllowed() {
         return ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
@@ -161,42 +160,27 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         return results[0];
     }
 
-    private void addMarker(LatLng latLng, String title, int markId) {
-        BitmapDescriptor icon = getIcon(latLng);
-        map.addMarker(new MarkerOptions().position(latLng).title(title).icon(icon)).setTag(markId);
+    private void addMarker(LatLng latLng, String title, int markId, boolean followed) {
+        BitmapDescriptor icon = getIcon(followed);
+        map.addMarker(new MarkerOptions().position(latLng).title(title).icon(icon).alpha(resolveOpacity(latLng))).setTag(markId);
     }
 
-    private BitmapDescriptor getIcon(LatLng latLng) {
-        float distance = getDistanceFrom(latLng);
-        if (distance > MAX_DISTANCE_ENABLED) {
-            if (distance > MAX_DISTANCE_DISABLED_NEAR) {
-                return getIconDisabledFar();
-            } else return getIconDisabledNear();
-        } else {
-            return getIconEnabled();
-        }
+    private BitmapDescriptor getIcon(boolean followed) {
+        return followed ? getIconFollowed() : getIconDefault();
     }
 
-    // LAZY LOAD
-    private BitmapDescriptor getIconDisabledFar() {
-        if (icon_disabled_far == null) {
-            icon_disabled_far = bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark_disabled_far);
+    private BitmapDescriptor getIconFollowed() {
+        if (icon_followed == null) {
+            icon_followed = bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark_followed);
         }
-        return icon_disabled_far;
+        return icon_followed;
     }
 
-    private BitmapDescriptor getIconDisabledNear() {
-        if (icon_disabled_near == null) {
-            icon_disabled_near = bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark_disabled_near);
+    private BitmapDescriptor getIconDefault() {
+        if (icon_default == null) {
+            icon_default = bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark_default);
         }
-        return icon_disabled_near;
-    }
-
-    private BitmapDescriptor getIconEnabled() {
-        if (icon_enabled == null) {
-            icon_enabled = bitmapDescriptorFromVector(context, R.drawable.ic_mark_hunters_mark_enabled);
-        }
-        return icon_enabled;
+        return icon_default;
     }
 
     private void initLocationServices() {
@@ -234,10 +218,22 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorId) {
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorId);
+        assert(vectorDrawable != null);
         vectorDrawable.setBounds(0,0, 100, 100);
         Bitmap bitmap = Bitmap.createBitmap(100,100, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+    private float resolveOpacity(LatLng latLng) {
+        float distance = getDistanceFrom(latLng);
+        if (distance <= MAX_DISTANCE_ENABLED) return 1.0f;
+        if (distance >= MAX_FETCH_DISTANCE) return 0.1f;
+        float division = distance / (float) MAX_FETCH_DISTANCE;
+        float relativeOpacity = 1.0f - division;
+        if (relativeOpacity < 0.1f) relativeOpacity = 0.1f; // opacidad minima
+        else if (relativeOpacity > 0.8f) relativeOpacity = 0.8f; // opacidad máxima sin habilitar
+        return relativeOpacity;
     }
 }

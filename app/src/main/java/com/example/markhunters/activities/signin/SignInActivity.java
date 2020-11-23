@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -12,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.markhunters.R;
-import com.example.markhunters.model.Mark;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.ServiceProvider;
 import com.example.markhunters.service.rest.RestClient;
@@ -30,8 +28,6 @@ import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class SignInActivity extends UserActivity {
     private static final String TAG = "AndroidClarified";
@@ -76,7 +72,7 @@ public class SignInActivity extends UserActivity {
             String token = result.getToken();
             RestClient restClient = ServiceProvider.getRestClient(token);
             UserActivity.setRestClient(restClient);
-            UserActivity.restClient.getUser(firebaseUser.getUid(), new RestClientCallbacks.CallbackInstance<UserModel>() {
+            UserActivity.restClient.getMyUser(new RestClientCallbacks.CallbackInstance<UserModel>() {
                 @Override
                 public void onFailure(@Nullable String message) {
                     System.out.println(message);

@@ -1,7 +1,5 @@
 package com.example.markhunters.model;
 
-import com.google.firebase.firestore.auth.User;
-
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,6 +11,14 @@ import java.util.List;
 public class UserFollowing extends Model{
     private String uid;
     private String username;
+
+    public String getUid() {
+        return uid;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 
     public UserFollowing(@NotNull String uid, @NotNull String username){
         this.uid = uid;
