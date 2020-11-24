@@ -1,0 +1,39 @@
+<resources>
+    <string name="BrandName">Markhu</string>
+    <string name="app_name">MarkHu</string>
+    <string name="logoutBtn">Log out</string>
+    <string name="welcome_to_markhunters">Markhu</string>
+    <string name="username">Usuario</string>
+    <string name="google_id">google_id</string>
+    <string name="nickname">Nickname</string>
+    <string name="email">Email</string>
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="edit">Editar</string>
+    <string name="loading">Cargando</string>
+    <string name="picture">Foto</string>
+    <string name="profile">Perfil</string>
+    <string name="map">Mapa</string>
+    <string name="signout">Agregar otra cuenta</string>
+    <string name="actions">Acciones</string>
+    <string name="markhunters">MarkHunters</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="placeholder_text">Placeholder text</string>
+    <string name="user_form">Usuario</string>
+    <string name="take_a_picture">Tomar foto</string>
+    <string name="cameraText">Cámara</string>
+
+    <string name="title_activity_maps">Mapa</string>
+    <string name="mark_hunters">Mark Hunters</string>
+    <string name="intro_subtitle">Cazadores de contenido</string>
+    <string name="exit_button_label">Salir</string>
+    <string name="mark_button">Agrega un Mark</string>
+    <string name="mark_tag_hint">Ingrese un título</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="refresh_map">Actualizar</string>
+    <string name="Opciones">+</string>
+    <string name="volver">-</string>
+    <string name="seguir">Seguir</string>
+</resources>
