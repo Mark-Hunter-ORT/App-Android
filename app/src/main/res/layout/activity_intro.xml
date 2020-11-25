@@ -4,16 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFC60A06"
+    android:background="#2196F3"
     tools:context=".activities.IntroActivity">
 
-    <ImageView
-        android:id="@+id/cameraView"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
-        android:background="@drawable/ic_mark_hunters_logo_no_bckg"
-        android:backgroundTint="#FFC60A06"
-        android:backgroundTintMode="screen"
-        android:layout_centerInParent="true"/>
-
+    <TextView
+        android:id="@+id/BrandText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="142dp"
+        android:layout_marginTop="244dp"
+        android:fontFamily="@font/baloo_thambi"
+        android:text="@string/BrandName"
+        android:textColor="#FFFCFC"
+        android:textSize="36sp" />
 </RelativeLayout>

@@ -27,6 +27,7 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
     public static final String USER_MODEL = "user_model";
     private DrawerLayout drawer;
     private UserModel user;
+    private static String uid; // Lo voy a usar para saber si el mark que estoy viendo es mio
     private NavigationView navigationView;
 
     public RestClient getClient() {
@@ -109,5 +110,13 @@ public class MenuActivity extends UserActivity implements NavigationView.OnNavig
 
     public void setUser(UserModel user) {
         this.user = user;
+    }
+
+    public static void setUid(String uid) {
+        MenuActivity.uid = uid;
+    }
+
+    public static String getUid() {
+        return uid;
     }
 }

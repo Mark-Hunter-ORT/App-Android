@@ -11,12 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.example.markhunters.R;
+import com.example.markhunters.activities.MenuActivity;
 import com.example.markhunters.model.Mark;
 import com.example.markhunters.service.image.ImageUtils;
 import com.example.markhunters.service.rest.RestClientCallbacks;
 import com.example.markhunters.ui.LoadingDialog;
 
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Text;
 
 
 public class MarkViewFragment extends MarkFragment {
@@ -25,6 +27,7 @@ public class MarkViewFragment extends MarkFragment {
     private ImageView mImageView;
     private TextView mTextView;
     private TextView authorTextView;
+    private TextView followingTextView;
     private String authorId;
     private String authorName;
     private boolean isByFollowed;
@@ -41,6 +44,9 @@ public class MarkViewFragment extends MarkFragment {
         mImageView = root.findViewById(R.id.markViewImage);
         mTextView = root.findViewById(R.id.markViewText);
         authorTextView = root.findViewById(R.id.authorTextView);
+        followingTextView = root.findViewById(R.id.followingTextView);
+        followingTextView.setVisibility(View.INVISIBLE);
+
         LoadingDialog loadingDialog = new LoadingDialog(activity);
         loadingDialog.start();
         getClient().getMark(markId, new RestClientCallbacks.CallbackInstance<Mark>() {
@@ -62,6 +68,10 @@ public class MarkViewFragment extends MarkFragment {
                     authorId = mark.userId;
                     authorName = mark.userName;
                     isByFollowed = mark.isByFollowed;
+                    if (isByFollowed) {
+                        followingTextView.setVisibility(View.VISIBLE);
+                        followingTextView.setText("Siguiendo");
+                    }
                     resolveFollowButton(root);
                     loadingDialog.dismiss();
                 });
@@ -72,10 +82,12 @@ public class MarkViewFragment extends MarkFragment {
 
     private void resolveFollowButton(View root) {
         View followBtn = root.findViewById(R.id.followBtn);
-        if (isByFollowed) {
+        if (isByFollowed || authorId.equals(MenuActivity.getUid())) {
             followBtn.setVisibility(View.INVISIBLE);
             followBtn.setEnabled(false);
-        } else followBtn.setOnClickListener(view -> {
+        } else {
+            followBtn.setVisibility(View.VISIBLE);
+            followBtn.setOnClickListener(view -> {
                 LoadingDialog loadingDialog = new LoadingDialog(activity, "Siguiendo...");
                 loadingDialog.start();
                 if (authorId != null) {
@@ -101,5 +113,6 @@ public class MarkViewFragment extends MarkFragment {
                     });
                 }
             });
+        }
     }
 }
