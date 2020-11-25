@@ -198,8 +198,10 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1,
                         1, locationListener);
                 float zoomLevel = 16.0f;
-                final LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
+                if (currentLocation != null) {
+                    final LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
+                }
             }
         }
     }

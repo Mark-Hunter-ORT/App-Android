@@ -46,6 +46,9 @@ public class SignInActivity extends UserActivity {
             final Intent signInIntent = gsc.getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN);
         });
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
     }
 
     @Override
