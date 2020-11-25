@@ -234,8 +234,8 @@ public class MapFragment extends MarkFragment implements OnMapReadyCallback {
         if (distance >= MAX_FETCH_DISTANCE) return 0.1f;
         float division = distance / (float) MAX_FETCH_DISTANCE;
         float relativeOpacity = 1.0f - division;
-        if (relativeOpacity < 0.1f) relativeOpacity = 0.1f; // opacidad minima
-        else if (relativeOpacity > 0.8f) relativeOpacity = 0.8f; // opacidad máxima sin habilitar
+        if (relativeOpacity < 0.2f) relativeOpacity = 0.2f; // opacidad minima
+        else if (relativeOpacity > 0.7f) relativeOpacity = 0.7f; // opacidad máxima sin habilitar
         return relativeOpacity;
     }
 }

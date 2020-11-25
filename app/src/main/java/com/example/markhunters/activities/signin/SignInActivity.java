@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.markhunters.R;
+import com.example.markhunters.activities.MenuActivity;
 import com.example.markhunters.model.UserModel;
 import com.example.markhunters.service.ServiceProvider;
 import com.example.markhunters.service.rest.RestClient;
@@ -84,6 +85,7 @@ public class SignInActivity extends UserActivity {
                 }
                 @Override
                 public void onSuccess(@Nullable UserModel userModel) {
+                    MenuActivity.setUid(firebaseUser.getUid());
                     if (userModel == null) {
                         startUserFormActivity(firebaseUser); // creation
                     } else {

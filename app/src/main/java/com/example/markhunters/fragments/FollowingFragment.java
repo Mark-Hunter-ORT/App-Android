@@ -45,14 +45,21 @@ public class FollowingFragment extends MarkFragment implements TabableFragment {
     private void populateTable() {
         activity.runOnUiThread(() -> {
             table.removeAllViews();
-            userFollowings.forEach(uf -> {
+            if (userFollowings.isEmpty()) {
                 TableRow tableRow = new TableRow(context);
-                TextView nameCell = buildCell(uf.getUsername());
-                tableRow.addView(nameCell);
-                Button unfollowBtn = buildUnfollowBtn(uf.getUid(), uf.getUsername());
-                tableRow.addView(unfollowBtn);
+                TextView cell = buildCell("No estás siguiendo a ningún MarkHu");
+                tableRow.addView(cell);
                 table.addView(tableRow);
-            });
+            } else {
+                userFollowings.forEach(uf -> {
+                    TableRow tableRow = new TableRow(context);
+                    TextView nameCell = buildCell(uf.getUsername());
+                    tableRow.addView(nameCell);
+                    Button unfollowBtn = buildUnfollowBtn(uf.getUid(), uf.getUsername());
+                    tableRow.addView(unfollowBtn);
+                    table.addView(tableRow);
+                });
+            }
         });
     }
 

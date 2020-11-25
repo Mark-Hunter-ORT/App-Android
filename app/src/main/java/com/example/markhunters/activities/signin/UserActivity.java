@@ -86,8 +86,6 @@ public class UserActivity extends AppCompatActivity {
      * Calls both Firebase and Google sign out service for full cache clearance
      */
     public void signout() {
-        loadingDialog.start();
-        fAuth.signOut(); // clear user data
         gsc.signOut().addOnCompleteListener(task -> {
             Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
